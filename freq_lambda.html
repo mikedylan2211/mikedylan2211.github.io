@@ -3,302 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frequency & Wavelength Converter</title>
+    <title>Frequency-Wavelength Converter</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: #333;
-            min-height: 100vh;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            min-height: 100vh;
         }
         
         .container {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 30px;
             width: 100%;
             max-width: 500px;
+            text-align: center;
         }
         
         h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #7f8c8d;
             margin-bottom: 30px;
-            font-size: 0.9rem;
+            color: #fff;
         }
         
-        .input-group {
-            margin-bottom: 20px;
+        .converter {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 5px;
         }
         
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
+            font-weight: bold;
         }
         
-        input, select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+        input[type="number"] {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #222;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 3px;
             font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        input:focus, select:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-        }
-        
-        .unit-container {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .unit-container input {
-            flex: 3;
-        }
-        
-        .unit-container select {
-            flex: 1;
         }
         
         .result {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 3px;
+            font-weight: bold;
+            min-height: 20px;
+        }
+        
+        .info {
             margin-top: 20px;
-            text-align: center;
-            border-left: 4px solid #3498db;
-        }
-        
-        .result h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        
-        .result-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2c3e50;
-        }
-        
-        .formula {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            text-align: center;
-        }
-        
-        .formula span {
-            font-family: monospace;
-            background-color: #f1f1f1;
-            padding: 2px 5px;
-            border-radius: 4px;
-        }
-        
-        .note {
-            margin-top: 15px;
-            font-size: 0.8rem;
-            color: #95a5a6;
-            text-align: center;
+            padding: 15px;
+            background-color: #111;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Frequency & Wavelength Converter</h1>
-        <p class="subtitle">Convert between frequency and wavelength of electromagnetic waves</p>
+        <h1>Frequency-Wavelength Converter</h1>
         
-        <div class="input-group">
-            <label for="frequency">Frequency</label>
-            <div class="unit-container">
-                <input type="number" id="frequency" placeholder="Enter frequency">
-                <select id="frequencyUnit">
-                    <option value="Hz">Hz</option>
-                    <option value="kHz">kHz</option>
-                    <option value="MHz">MHz</option>
-                    <option value="GHz" selected>GHz</option>
-                </select>
-            </div>
+        <div class="converter">
+            <label for="frequency">Frequency (Hz):</label>
+            <input type="number" id="frequency" placeholder="Enter frequency in Hz" step="any" min="0">
+            <div class="result" id="wavelengthResult">Wavelength will appear here</div>
         </div>
         
-        <div class="input-group">
-            <label for="wavelength">Wavelength</label>
-            <div class="unit-container">
-                <input type="number" id="wavelength" placeholder="Enter wavelength">
-                <select id="wavelengthUnit">
-                    <option value="m">m</option>
-                    <option value="cm">cm</option>
-                    <option value="mm" selected>mm</option>
-                    <option value="μm">μm</option>
-                    <option value="nm">nm</option>
-                </select>
-            </div>
+        <div class="converter">
+            <label for="wavelength">Wavelength (meters):</label>
+            <input type="number" id="wavelength" placeholder="Enter wavelength in meters" step="any" min="0">
+            <div class="result" id="frequencyResult">Frequency will appear here</div>
         </div>
         
-        <div class="result">
-            <h3>Conversion Result</h3>
-            <div class="result-value" id="result">Enter a value to calculate</div>
-        </div>
-        
-        <div class="formula">
-            Formula: <span>c = λ × f</span> where c = speed of light (299,792,458 m/s)
-        </div>
-        
-        <div class="note">
-            Note: Changes in either field will automatically update the other
+        <div class="info">
+            <strong>Formula:</strong> wavelength (m) = speed of light (m/s) / frequency (Hz)<br>
+            <strong>Speed of light:</strong> 299,792,458 m/s<br>
+            <strong>Note:</strong> Enter a value in either field to see the conversion
         </div>
     </div>
 
     <script>
-        // DOM elements
-        const frequencyInput = document.getElementById('frequency');
-        const frequencyUnit = document.getElementById('frequencyUnit');
-        const wavelengthInput = document.getElementById('wavelength');
-        const wavelengthUnit = document.getElementById('wavelengthUnit');
-        const resultElement = document.getElementById('result');
-        
-        // Constants
         const SPEED_OF_LIGHT = 299792458; // m/s
         
-        // Unit conversion factors (to base units)
-        const frequencyFactors = {
-            'Hz': 1,
-            'kHz': 1000,
-            'MHz': 1000000,
-            'GHz': 1000000000
-        };
+        // Get DOM elements
+        const frequencyInput = document.getElementById('frequency');
+        const wavelengthInput = document.getElementById('wavelength');
+        const wavelengthResult = document.getElementById('wavelengthResult');
+        const frequencyResult = document.getElementById('frequencyResult');
         
-        const wavelengthFactors = {
-            'm': 1,
-            'cm': 0.01,
-            'mm': 0.001,
-            'μm': 0.000001,
-            'nm': 0.000000001
-        };
-        
-        // Convert frequency to wavelength
-        function frequencyToWavelength(frequency, frequencyUnit) {
-            const freqInHz = frequency * frequencyFactors[frequencyUnit];
-            if (freqInHz <= 0) return NaN;
-            
-            const wavelengthInMeters = SPEED_OF_LIGHT / freqInHz;
-            return wavelengthInMeters;
+        function frequencyToWavelength(frequencyHz) {
+            if (frequencyHz <= 0) return NaN;
+            return SPEED_OF_LIGHT / frequencyHz;
         }
         
-        // Convert wavelength to frequency
-        function wavelengthToFrequency(wavelength, wavelengthUnit) {
-            const wavelengthInMeters = wavelength * wavelengthFactors[wavelengthUnit];
-            if (wavelengthInMeters <= 0) return NaN;
-            
-            const frequencyInHz = SPEED_OF_LIGHT / wavelengthInMeters;
-            return frequencyInHz;
+        function wavelengthToFrequency(wavelengthMeters) {
+            if (wavelengthMeters <= 0) return NaN;
+            return SPEED_OF_LIGHT / wavelengthMeters;
         }
         
-        // Format number with appropriate precision
-        function formatNumber(num) {
-            if (num === 0) return '0';
-            if (isNaN(num)) return 'Invalid input';
-            
-            if (num >= 1e9) {
-                return (num / 1e9).toPrecision(6) + '×10⁹';
-            } else if (num >= 1e6) {
-                return (num / 1e6).toPrecision(6) + '×10⁶';
-            } else if (num >= 1e3) {
-                return (num / 1e3).toPrecision(6) + '×10³';
-            } else if (num >= 1) {
-                return num.toPrecision(6);
-            } else if (num >= 1e-3) {
-                return (num * 1e3).toPrecision(6) + '×10⁻³';
-            } else if (num >= 1e-6) {
-                return (num * 1e6).toPrecision(6) + '×10⁻⁶';
-            } else if (num >= 1e-9) {
-                return (num * 1e9).toPrecision(6) + '×10⁻⁹';
+        frequencyInput.addEventListener('input', function() {
+            const frequency = parseFloat(this.value);
+            if (frequency > 0) {
+                const wavelength = frequencyToWavelength(frequency);
+                wavelengthResult.textContent = `Wavelength: ${wavelength.toFixed(2)} meters`;
             } else {
-                return num.toExponential(6);
+                wavelengthResult.textContent = 'Wavelength will appear here';
             }
-        }
+        });
         
-        // Update result display
-        function updateResult(frequency, wavelength) {
-            if (isNaN(frequency) || isNaN(wavelength)) {
-                resultElement.textContent = 'Invalid input';
-                return;
-            }
-            
-            const freqUnit = frequencyUnit.value;
-            const waveUnit = wavelengthUnit.value;
-            
-            resultElement.innerHTML = `
-                ${formatNumber(frequency)} ${freqUnit} = ${formatNumber(wavelength)} ${waveUnit}<br>
-                ${formatNumber(wavelength)} ${waveUnit} = ${formatNumber(frequency)} ${freqUnit}
-            `;
-        }
-        
-        // Handle frequency input changes
-        function handleFrequencyChange() {
-            const frequency = parseFloat(frequencyInput.value);
-            
-            if (!isNaN(frequency) && frequency > 0) {
-                const wavelength = frequencyToWavelength(frequency, frequencyUnit.value);
-                const wavelengthInSelectedUnit = wavelength / wavelengthFactors[wavelengthUnit.value];
-                
-                wavelengthInput.value = wavelengthInSelectedUnit;
-                updateResult(frequency, wavelengthInSelectedUnit);
+        wavelengthInput.addEventListener('input', function() {
+            const wavelength = parseFloat(this.value);
+            if (wavelength > 0) {
+                const frequency = wavelengthToFrequency(wavelength);
+                frequencyResult.textContent = `Frequency: ${frequency.toFixed(2)} Hz`;
             } else {
-                wavelengthInput.value = '';
-                resultElement.textContent = 'Enter a value to calculate';
+                frequencyResult.textContent = 'Frequency will appear here';
             }
-        }
-        
-        // Handle wavelength input changes
-        function handleWavelengthChange() {
-            const wavelength = parseFloat(wavelengthInput.value);
-            
-            if (!isNaN(wavelength) && wavelength > 0) {
-                const frequency = wavelengthToFrequency(wavelength, wavelengthUnit.value);
-                const frequencyInSelectedUnit = frequency / frequencyFactors[frequencyUnit.value];
-                
-                frequencyInput.value = frequencyInSelectedUnit;
-                updateResult(frequencyInSelectedUnit, wavelength);
-            } else {
-                frequencyInput.value = '';
-                resultElement.textContent = 'Enter a value to calculate';
-            }
-        }
-        
-        // Event listeners
-        frequencyInput.addEventListener('input', handleFrequencyChange);
-        frequencyUnit.addEventListener('change', handleFrequencyChange);
-        wavelengthInput.addEventListener('input', handleWavelengthChange);
-        wavelengthUnit.addEventListener('change', handleWavelengthChange);
-        
-        // Initialize with an example
-        frequencyInput.value = '5';
-        handleFrequencyChange();
+        });
     </script>
 </body>
 </html>
