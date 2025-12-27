@@ -5,168 +5,233 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Personal website of Mike Dylan Poppelaars, a physics student at the University of Zurich.">
   <title>Mike Dylan Poppelaars</title>
+
   <style>
-  body {
-    background-color: #000000; 
-    color: #FFFFFF; 
-    font-family: Arial, sans-serif;
-  }
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
 
-  h2 {
-    border-bottom: 2px solid #333;
-    padding-bottom: 0.3em;
-    margin-bottom: 1em;
-  }
+    a {
+      color: #00BFFF;
+    }
 
-  section {
-    border: 1px solid #333;
-    background-color: #111;
-    padding: 1.2em;
-    margin-bottom: 2em;
-  }
+    a:hover {
+      color: #1E90FF;
+    }
 
-  article {
-    border-top: 1px solid #222;
-    padding-top: 1em;
-    margin-top: 2em;
-  }
+    header, footer {
+      padding: 1rem;
+    }
 
-  article p {
-    text-align: justify;
-  }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
 
-  a {
-    color: #00BFFF; 
-  }
+    nav li {
+      margin: 0;
+    }
 
-  a:hover {
-    color: #1E90FF;
-  }
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
 
-  .status.active {
-    color: limegreen;
-    font-weight: bold;
-    margin-left: 10px;
-  }
+    section {
+      border: 1px solid #333;
+      background-color: #111;
+      padding: 1.5em;
+      margin-bottom: 2em;
+    }
 
-</style>
+    h2 {
+      border-bottom: 2px solid #333;
+      padding-bottom: 0.3em;
+      margin-bottom: 1em;
+    }
 
+    article {
+      border-top: 1px solid #222;
+      padding-top: 1.5em;
+      margin-top: 2.5em;
+    }
+
+    article p {
+      text-align: justify;
+      line-height: 1.6;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+
+    .image-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .image-row img {
+      height: auto;       
+      max-width: 260px;  
+      width: auto;        
+    }
+
+
+    pre {
+      overflow-x: auto;
+      white-space: pre;
+      font-size: 0.85rem;
+      background-color: #000;
+      padding: 1em;
+      border: 1px solid #333;
+    }
+
+    .status.active {
+      color: limegreen;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 600px) {
+      .image-row {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .image-row img {
+       max-width: 100%;
+      }
+    } 
+
+  </style>
 </head>
+
 <body>
-  <!-- Header Section -->
-  <header>
-    <h1>Welcome</h1>
-    <nav>
-      <ul>
-        <li><a href="#about">About Me</a></li>
-        <li><a href="#posts">Posts</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#HAMQSL">HAMQSL</a></li>
-        <li><a href="#pgp-keys">PGP Keys</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <!-- Main Content -->
-  <main>
-    <!-- About Me Section -->
-    <section id="about">
-      <h2>About Me</h2>
-      <p>Hi! My name is Mike, I am a physics student at the University of Zurich, Switzerland.</p>
-    </section>
+<header>
+  <h1>Welcome</h1>
+  <nav>
+    <ul>
+      <li><a href="#about">About Me</a></li>
+      <li><a href="#posts">Posts</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#HAMQSL">HAMQSL</a></li>
+      <li><a href="#pgp-keys">PGP Keys</a></li>
+    </ul>
+  </nav>
+</header>
 
-    <!-- Blog Posts Section -->
-    <section id="posts">
-      <h2>Posts</h2>
+<main>
 
-      <article>
-        <h3>• Nomad Network</h3>
-        <p>Posted on: <time datetime="2025-12-24">December 24, 2025</time></p>
-        <p>
-          Off-grid, resilient mesh communication with strong encryption, forward secrecy and extreme privacy.
-          Nomad Network allows you to build private and resilient communications platforms that are in complete control and ownership
-          of the people that use them. No signups, no agreements, no handover of any data, no permissions and gatekeepers.
-          Nomad Network is build on LXMF and Reticulum, which together provides the cryptographic mesh functionality and peer-to-peer
-          message routing that Nomad Network relies on. This foundation also makes it possible to use the program over
-          a very wide variety of communication mediums, from packet radio to fiber optics.
-          Nomad Network does not need any connections to the public internet to work. In fact, it doesn't even need an IP or Ethernet network.
-          You can use it entirely over packet radio, LoRa or even serial lines. But if you wish, you can bridge islanded networks over the Internet or
-          private ethernet networks, or you can build networks running completely over the Internet. The choice is yours. Since Nomad Network uses Reticulum,
-          it is efficient enough to run even over extremely low-bandwidth medium, and has been succesfully used over 300bps radio links.
-        </p>
-        <p><a href="https://github.com/markqvist/NomadNet">Official Nomadnet Github</a></p>
-        <img src="nomadnet.png" alt="nomadnet" width="700" height="395">
-      </article>
-      
-      <article>
-        <h3>• Meshcore</h3>
-        <p>Posted on: <time datetime="2025-12-23">December 23, 2025</time></p>
-        <p>
-          MeshCore is a multi platform system for enabling secure text based communications utilising LoRa radio hardware.
-          It can be used for Off-Grid Communication, Emergency Response &
-          Disaster Recovery, Outdoor Activities, Tactical Security including law enforcement and private security and also IoT sensor networks.
-        </p>
-        <a href="https://meshcore.co.uk/">Official Meshcore Website</a>
-        <p>I have a Repeater setup in the Attic, currently not the best position but working on a solar node for the roof.</p>
-        <p>Feel free to reach out to me and add my contact:</p>
-        <img src="contact_meshcore.png" alt="contact_meshcore" style="display: inline-block; margin: 10px;" width="200" height="295">
-        <img src="map_meshcore.jpeg" alt="map_meshcore" style="display: inline-block; margin: 10px;" width="200" height="410">
-      </article>
+  <section id="about">
+    <h2>About Me</h2>
+    <p>
+      Hi! My name is Mike, I am a physics student at the University of Zurich, Switzerland.
+    </p>
+  </section>
 
-      <article>
-        <h3>• GPG Cheat Sheet</h3>
-        <p>Posted on: <time datetime="2025-11-30">November 30, 2025</time></p>
-        <p>
-          <a href="files/gpg_cheat_sheet_11_2025.txt" download>gpg_cheat_sheet_11_2025.txt</a>
-        </p>
-        <p>
-          <a href="files/gpg_cheat_sheet_11_2025.txt.sig" download>gpg_cheat_sheet_11_2025.txt.sig</a>
-        </p>
-      </article>
-      
-      <article>
-        <h3><a href="freq_lambda.html">• Frequency/Wavelength conversion</a></h3>
-        <p>Posted on: <time datetime="2025-10-29">October 29, 2025</time></p>
-        <p>Frequency/Wavelength conversion</p>
-      </article>
-      
-      <article>
-        <h3><a href="bouncing_ball.html">• Bouncing balls in gravity</a></h3>
-        <p>Posted on: <time datetime="2025-10-15">October 15, 2025</time></p>
-        <p>Some bouncing balls in a box.</p>
-      </article>
-      
-      <article>
-        <h3>• Website launch</h3>
-        <p>Posted on: <time datetime="2025-02-07">February 7, 2025</time></p>
-        <p>First launch of this website.</p>
-      </article>
-      
-    </section>
+  <section id="posts">
+    <h2>Posts</h2>
 
-    <!-- Contact Section -->
-    <section id="contact">
-      <h2>Contact Me</h2>
-      <ul>
-        <li><a href="https://github.com/mikedylan2211/">My Github</a></li>
-        <li><a href="https://www.youtube.com/@MikePoppelaars">My Youtube</a></li>
-        <li><a href="mailto:mail@mikedylan.com">Email</a></li>
-      </ul>
-    </section>
+    <article>
+      <h3>• Nomad Network</h3>
+      <p>Posted on: <time datetime="2025-12-24">December 24, 2025</time></p>
+      <p>
+        <a href="https://github.com/markqvist/NomadNet">Official NomadNet GitHub</a>
+      </p>
+      <p>
+        Off-grid, resilient mesh communication with strong encryption, forward secrecy and extreme privacy.
+        Nomad Network allows you to build private and resilient communications platforms that are in complete
+        control and ownership of the people that use them.
+      </p>
+      <p>
+        Nomad Network is built on LXMF and Reticulum and can operate over packet radio, LoRa, serial links,
+        fiber optics or even 300bps radio links, without requiring the public Internet. 
+      </p>
+      <p>
+        My LXMF is in the Local Peer Info of the screenshot. I host a Pi node, you can add it as a TCP Client Interface.
+      </p>
+      <img src="nomadnet.png" alt="Nomad Network">
+    </article>
 
-    <section id="HAMQSL">
-      <h2>Solar-Terrestrial Data</h2>
-      <a href="https://www.hamqsl.com/solar.html" title="Click to add Solar-Terrestrial Data to your website!"><img src="https://www.hamqsl.com/solar101vhfpic.php"></a>
-      
-    </section>
+    <article>
+      <h3>• MeshCore</h3>
+      <p>Posted on: <time datetime="2025-12-23">December 23, 2025</time></p>
+      <p>
+        <a href="https://meshcore.co.uk/">Official MeshCore Website</a>
+      </p>
+      <p>
+        MeshCore is a multi-platform system for enabling secure text-based communications using LoRa radio hardware.
+        It is suitable for off-grid communication, disaster recovery, outdoor activities and IoT networks.
+      </p>
+      <p>
+        I currently run a repeater in the attic and am working on a solar roof node.
+      </p>
+      <div class="image-row">
+        <img src="contact_meshcore.png" alt="Meshcore contact">
+        <img src="map_meshcore.jpeg" alt="Meshcore map">
+      </div>
+    </article>
 
-    <!-- PGP Keys Section -->
-    <section id="pgp-keys">
-      <h2>PGP Keys</h2>
-      <h3>
-        Public Key <span class="status active">(Active)</span>
-      </h3>
-      <pre><code>
+    <article>
+      <h3>• GPG Cheat Sheet</h3>
+      <p>Posted on: <time datetime="2025-11-30">November 30, 2025</time></p>
+      <p><a href="files/gpg_cheat_sheet_11_2025.txt" download>gpg_cheat_sheet_11_2025.txt</a></p>
+      <p><a href="files/gpg_cheat_sheet_11_2025.txt.sig" download>gpg_cheat_sheet_11_2025.txt.sig</a></p>
+    </article>
+
+    <article>
+      <h3><a href="freq_lambda.html">• Frequency/Wavelength conversion</a></h3>
+      <p>Posted on: <time datetime="2025-10-29">October 29, 2025</time></p>
+    </article>
+
+    <article>
+      <h3><a href="bouncing_ball.html">• Bouncing balls in gravity</a></h3>
+      <p>Posted on: <time datetime="2025-10-15">October 15, 2025</time></p>
+    </article>
+
+    <article>
+      <h3>• Website launch</h3>
+      <p>Posted on: <time datetime="2025-02-07">February 7, 2025</time></p>
+    </article>
+
+  </section>
+
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <ul>
+      <li><a href="https://github.com/mikedylan2211/">GitHub</a></li>
+      <li><a href="https://www.youtube.com/@MikePoppelaars">YouTube</a></li>
+      <li><a href="mailto:mail@mikedylan.com">Email</a></li>
+    </ul>
+  </section>
+
+  <section id="HAMQSL">
+    <h2>Solar-Terrestrial Data</h2>
+    <a href="https://www.hamqsl.com/solar.html">
+      <img src="https://www.hamqsl.com/solar101vhfpic.php" alt="Solar data">
+    </a>
+  </section>
+
+  <section id="pgp-keys">
+    <h2>PGP Keys</h2>
+
+    <h3>Public Key <span class="status active">(Active)</span></h3>
+
+    <pre><code>
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mDMEaN2HMxYJKwYBBAHaRw8BAQdAREfg68hVcmi+gRlJJXOxfiN9LCyY2sfHwAQR
@@ -181,58 +246,28 @@ hzMCGwwFCQlmAYAACgkQP87Cd49aMCoHqAEAt1UIqZR0ZQIpnU0WtiMAqExEOIOi
 GEtqGlHfTtAUlv4A/jxUe5PgPaSXLuQmJUP87CQykqDMkd4H3XSt05ZEibcL
 =s6wI
 -----END PGP PUBLIC KEY BLOCK-----
-      </code></pre>
-      <p><strong>Fingerprint:</strong> 45E1 628B 06A4 AE9E D15D  DDEE 3FCE C277 8F5A 302A</p>
-      <h3>Keyservers</h3>
-      <ul>
-        <li>keys.openpgp.org</li>
-        <li>keyserver.ubuntu.com</li>
-      </ul>
-      <pre>
-      <strong>pub</strong>
-      (4)eddsa263/45e1628b06a4ae9ed15dddee3fcec2778f5a302a
-      2025-10-01T19:55:31Z
+    </code></pre>
 
-      <strong>uid</strong>
-      <span class="uid">Mike Dylan Poppelaars (Batter my heart, three-person&#39;d God.) &lt;mail@mikedylan.com&gt;</span>
+    <p><strong>Fingerprint:</strong> 45E1 628B 06A4 AE9E D15D DDEE 3FCE C277 8F5A 302A</p>
+  </section>
 
-      sig cert  
-      3fcec2778f5a302a
-      2025-10-01T19:55:31Z 2030-09-30T19:55:31Z ____________________ 
-      [selfsig]
+  <p>
+    If you want to help people circumvent online censorship, consider running the Snowflake proxy:
+  </p>
 
-      <strong>sub</strong>
-      (4)ecdh263/c378a0e125ce94c929d937d9a04e2f16abbb4ef3 2025-10-01T19:55:31Z
-      sig sbind  
-      3fcec2778f5a302a
-      2025-10-01T19:55:31Z ____________________ 2030-09-30T19:55:31Z 
-      </pre>
-    </section>
-    
-    <!-- Tor Snowflake -->
-    <p>If you want to help people circumvent online censorship, consider turning on the snowflake proxy. For more info, visit the official Tor website.</p>
-    <iframe src="https://snowflake.torproject.org/embed.html" width="320" height="240" frameborder="0" scrolling="no"></iframe>
-  </main>
+  <iframe
+    src="https://snowflake.torproject.org/embed.html"
+    width="320"
+    height="240"
+    frameborder="0"
+    scrolling="no">
+  </iframe>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Mike Dylan Poppelaars. All rights reserved.</p>
-  </footer>
+</main>
+
+<footer>
+  <p>&copy; 2025 Mike Dylan Poppelaars</p>
+</footer>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
