@@ -153,13 +153,23 @@
         <a href="https://github.com/markqvist/NomadNet">Official NomadNet GitHub</a>
       </p>
       <p>
-        Off-grid, resilient mesh communication with strong encryption, forward secrecy and extreme privacy.
-        Nomad Network allows you to build private and resilient communications platforms that are in complete
-        control and ownership of the people that use them.
+        Nomad Network allows you to build private and resilient communications platforms that are in complete control and ownership 
+        of the people that use them. No signups, no agreements, no handover of any data, no permissions and gatekeepers.
+        Nomad Network is build on LXMF and Reticulum, which together provides the cryptographic mesh functionality and peer-to-peer message 
+        routing that Nomad Network relies on. This foundation also makes it possible to use the program over a very wide variety of communication mediums, from packet radio to fiber optics.
       </p>
       <p>
-        Nomad Network is built on LXMF and Reticulum and can operate over packet radio, LoRa, serial links,
-        fiber optics or even 300bps radio links, without requiring the public Internet. 
+        Nomad Network does not need any connections to the public internet to work. In fact, it doesn't even need an IP or Ethernet network. You can use it entirely over packet radio, 
+        LoRa or even serial lines. But if you wish, you can bridge islanded networks over the Internet or private ethernet networks, or you can build networks running completely over 
+        the Internet. The choice is yours. Since Nomad Network uses Reticulum, it is efficient enough to run even over extremely low-bandwidth medium, and has been succesfully used over 300bps radio links.
+      </p>
+      <p>
+        The easiest way to get started using Nomadnet is to download it using a package manager like 'pip'. It can be launched by typing nomadnet in the terminal. The application is entirely
+        terminal based. There is a very good talk from markqvist, the creater of Nomadnet, that explains the underlying network stack called Reticulum. I suggest watching that on Youtube 
+        <a href="https://www.youtube.com/watch?v=pnyuSWy66cI">here</a> and reading the official Nomadnet Github linked above.
+      </p> 
+      <p>
+        To get really familiar with Nomadnet and Reticulum, the best way is to install Nomadnet with pip as described above and go through the 'Guide' tab at the top of the screen.
       </p>
       <p>
         My LXMF is in the Local Peer Info of the screenshot. I host a Pi node, you can add it as a TCP Client Interface.
@@ -184,6 +194,10 @@
         <img src="contact_meshcore.png" alt="Meshcore contact">
         <img src="map_meshcore.jpeg" alt="Meshcore map">
       </div>
+      <p>
+        In the official Meshcore Github in the meshcore_py repo there is a serial_pingbot.py and many more cool python templates (https://github.com/meshcore-dev/meshcore_py/tree/main/examples). 
+        I needed a pingbot that works over BLE so I adapted the script to work over BLE. It's in my Github.
+      </p>
     </article>
 
     <article>
