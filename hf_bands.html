@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3639932659685728"
+     crossorigin="anonymous"></script>
+
+<title>HF Bands Table</title>
+<style>
+  :root {
+    --bg: #0b0d10;
+    --bg-alt: #11151b;
+    --border: #232a36;
+    --text: #e6e9ef;
+    --muted: #aab0bf;
+    --accent: #4da3ff;
+  }
+
+  body {
+    margin: 0;
+    padding: 24px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .table-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+  }
+
+  thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: #0f131a;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px;
+    position: sticky;
+    top: 0;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr:nth-child(even) {
+    background: #0e1218;
+  }
+
+  td {
+    padding: 14px;
+    vertical-align: top;
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  td.band {
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  td.freq {
+    white-space: nowrap;
+  }
+
+  td.type {
+    color: var(--muted);
+  }
+
+  @media (max-width: 700px) {
+    table {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<p style="text-align:center;">
+  <a href="https://www.hamqsl.com/solar.html">
+    <img src="https://www.hamqsl.com/solar101vhfpic.php" alt="Solar data">
+  </a>
+</p>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Band (m)</th>
+      <th>Frequency Range (MHz)</th>
+      <th>Type / Allocations</th>
+      <th>Typical Uses / Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="band">160 m</td>
+      <td class="freq">1.8 – 2.0</td>
+      <td class="type">Amateur (region-dependent)</td>
+      <td>DX at night; NVIS for local communications; narrow bandwidths.</td>
+    </tr>
+    <tr>
+      <td class="band">120 m</td>
+      <td class="freq">2.3 – 2.495</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Tropical-region broadcasts; technically MF but often listed with shortwave.</td>
+    </tr>
+    <tr>
+      <td class="band">90 m</td>
+      <td class="freq">3.2 – 3.4</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Local tropical broadcasts; limited long-distance propagation at night.</td>
+    </tr>
+    <tr>
+      <td class="band">80 m</td>
+      <td class="freq">3.5 – 4.0</td>
+      <td class="type">Amateur / shared with broadcast (region-dependent)</td>
+      <td>Nighttime DX; regional propagation; significant regional allocation differences.</td>
+    </tr>
+    <tr>
+      <td class="band">75 m</td>
+      <td class="freq">3.9 – 4.0</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Primarily used in Eastern Hemisphere after dark; overlaps 80 m amateur in some regions.</td>
+    </tr>
+    <tr>
+      <td class="band">60 m (broadcast)</td>
+      <td class="freq">4.75 – 4.995</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Tropical local broadcasts; time stations near 5 MHz.</td>
+    </tr>
+    <tr>
+      <td class="band">60 m (amateur)</td>
+      <td class="freq">≈5.332 – 5.405</td>
+      <td class="type">Amateur (channelized, country-specific)</td>
+      <td>Special channelized allocations; regulations vary by country.</td>
+    </tr>
+    <tr>
+      <td class="band">49 m</td>
+      <td class="freq">5.9 – 6.2</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Good year-round nighttime band; poor daytime long-distance propagation.</td>
+    </tr>
+    <tr>
+      <td class="band">41 / 40 m</td>
+      <td class="freq">7.0 – 7.45</td>
+      <td class="type">Broadcast + Amateur (region-dependent)</td>
+      <td>41 m broadcast ~7.2–7.45 MHz; 40 m amateur excellent for night DX and NVIS.</td>
+    </tr>
+    <tr>
+      <td class="band">31 m</td>
+      <td class="freq">9.4 – 9.9</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Heavily used for international broadcasting; strong nighttime performance.</td>
+    </tr>
+    <tr>
+      <td class="band">30 m</td>
+      <td class="freq">10.100 – 10.150</td>
+      <td class="type">Amateur (IARU)</td>
+      <td>CW and data only; effective for regional and long-haul propagation.</td>
+    </tr>
+    <tr>
+      <td class="band">25 m</td>
+      <td class="freq">11.6 – 12.1</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Good during summer and around sunset.</td>
+    </tr>
+    <tr>
+      <td class="band">22 m</td>
+      <td class="freq">13.57 – 13.87</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Widely used in Eurasia; similar propagation to 19 m band.</td>
+    </tr>
+    <tr>
+      <td class="band">20 m</td>
+      <td class="freq">14.000 – 14.350</td>
+      <td class="type">Amateur (IARU) + other allocations</td>
+      <td>Primary long-distance DX band; excellent daytime propagation.</td>
+    </tr>
+    <tr>
+      <td class="band">19 m</td>
+      <td class="freq">15.1 – 15.83</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Strong daytime performance; best in summer; includes time stations.</td>
+    </tr>
+    <tr>
+      <td class="band">17 m</td>
+      <td class="freq">18.068 – 18.168</td>
+      <td class="type">Amateur (IARU)</td>
+      <td>Good daytime DX and sunset paths; quieter than adjacent bands.</td>
+    </tr>
+    <tr>
+      <td class="band">16 m</td>
+      <td class="freq">17.48 – 17.9</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Good daytime reception with seasonal variation.</td>
+    </tr>
+    <tr>
+      <td class="band">15 m</td>
+      <td class="freq">21.000 – 21.450</td>
+      <td class="type">Amateur (IARU) + some broadcast</td>
+      <td>Daytime DX during moderate to high solar activity; quieter at night.</td>
+    </tr>
+    <tr>
+      <td class="band">13 m</td>
+      <td class="freq">21.45 – 21.85</td>
+      <td class="type">International broadcast (ITU)</td>
+      <td>Erratic daytime propagation; minimal night reception.</td>
+    </tr>
+    <tr>
+      <td class="band">12 m</td>
+      <td class="freq">24.890 – 24.990</td>
+      <td class="type">Various services (region-dependent)</td>
+      <td>Often allocated to non-amateur services; check local regulations.</td>
+    </tr>
+    <tr>
+      <td class="band">11 m</td>
+      <td class="freq">25.67 – 26.1 / 26.965 – 27.405</td>
+      <td class="type">Broadcast / CB / mobile</td>
+      <td>Mostly local; long-distance propagation during high solar cycles.</td>
+    </tr>
+    <tr>
+      <td class="band">10 m</td>
+      <td class="freq">28.000 – 29.700</td>
+      <td class="type">Amateur (IARU)</td>
+      <td>VHF-like behavior during solar maxima; excellent daytime DX.</td>
+    </tr>
+    <tr>
+      <td class="band">HF overall</td>
+      <td class="freq">3 – 30</td>
+      <td class="type">ITU High Frequency band</td>
+      <td>Used for broadcasting, amateur, maritime, aeronautical, and fixed services; ionospheric skywave propagation.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+</body>
+</html>
