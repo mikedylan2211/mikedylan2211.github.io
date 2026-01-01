@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Simple conversion program for frequencies and wavelengths of electromagnetic radiation in vacuum.">
+<title>Frequency-Wavelength Converter - Mike Dylan Poppelaars</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  margin: 0;
+  padding: 2rem 1rem;
+  line-height: 1.6;
+}
+
+header, footer {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+h1 {
+  color: var(--green);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+p, label {
+  margin: 0.5rem 0;
+  color: var(--text-main);
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+a:hover { color: var(--green); }
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.converter {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--bg-section);
+  border: 2px solid var(--border);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  background-color: var(--bg-code);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.result {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.info {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background-color: var(--bg-section);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  body { font-size: 0.9rem; }
+  h1 { font-size: 1.6rem; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>./frequency_wavelength_converter.sh</h1>
+  <p>Last edited: <time datetime="2025-10-29">October 29, 2025</time></p>
+  <p><a href="../index.html">← Back to home</a></p>
+</header>
+
+<div class="container">
+  <div class="converter">
+    <label for="frequency">Frequency (Hz):</label>
+    <input type="number" id="frequency" placeholder="Enter frequency in Hz" step="any" min="0">
+    <div class="result" id="wavelengthResult">Wavelength will appear here</div>
+  </div>
+
+  <div class="converter">
+    <label for="wavelength">Wavelength (meters):</label>
+    <input type="number" id="wavelength" placeholder="Enter wavelength in meters" step="any" min="0">
+    <div class="result" id="frequencyResult">Frequency will appear here</div>
+  </div>
+
+  <div class="info">
+    <strong>Formula:</strong> wavelength (m) = speed of light (m/s) / frequency (Hz)<br>
+    <strong>Speed of light:</strong> 299,792,458 m/s<br>
+    <strong>Note:</strong> Enter a value in either field to see the conversion
+  </div>
+</div>
+
+<footer>
+  <p><a href="../index.html">← Back to home</a></p>
+</footer>
+
+<script>
+const SPEED_OF_LIGHT = 299792458;
+
+const frequencyInput = document.getElementById('frequency');
+const wavelengthInput = document.getElementById('wavelength');
+const wavelengthResult = document.getElementById('wavelengthResult');
+const frequencyResult = document.getElementById('frequencyResult');
+
+function frequencyToWavelength(frequencyHz) {
+  return frequencyHz > 0 ? SPEED_OF_LIGHT / frequencyHz : NaN;
+}
+
+function wavelengthToFrequency(wavelengthMeters) {
+  return wavelengthMeters > 0 ? SPEED_OF_LIGHT / wavelengthMeters : NaN;
+}
+
+frequencyInput.addEventListener('input', function() {
+  const freq = parseFloat(this.value);
+  wavelengthResult.textContent = freq > 0
+    ? `Wavelength: ${frequencyToWavelength(freq).toFixed(2)} meters`
+    : 'Wavelength will appear here';
+});
+
+wavelengthInput.addEventListener('input', function() {
+  const wl = parseFloat(this.value);
+  frequencyResult.textContent = wl > 0
+    ? `Frequency: ${wavelengthToFrequency(wl).toFixed(2)} Hz`
+    : 'Frequency will appear here';
+});
+</script>
+</body>
+</html>

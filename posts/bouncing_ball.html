@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Interactive Bouncing Ball Simulation with collision detection and energy loss.">
+<title>Bouncing Ball Simulation - Mike Dylan Poppelaars</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  margin: 0;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.6;
+}
+
+header, footer {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+h1 {
+  color: var(--green);
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  color: var(--text-main);
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+}
+
+canvas {
+  background-color: var(--bg-section);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  display: block;
+  max-width: 100%;
+}
+
+.controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background: var(--black);
+  color: var(--green);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+}
+
+button:hover {
+  background: var(--green);
+  color: var(--bg-main);
+}
+
+footer p {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 1.6rem; }
+  .controls { flex-direction: column; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>./bouncing_ball.sh</h1>
+  <p>
+    Last edited:
+    <time datetime="2025-10-15">October 15, 2025</time>
+  </p>
+  <p><a href="../index.html">← Back to home</a></p>
+</header>
+
+<canvas id="canvas" width="800" height="500"></canvas>
+
+<div class="controls">
+  <button onclick="resetBall()">Reset Ball</button>
+  <button onclick="toggleGravity()">Toggle Gravity</button>
+  <button onclick="addRandomBall()">Add Random Ball</button>
+</div>
+
+<footer>
+  <p><a href="../index.html">← Back to home</a></p>
+</footer>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let balls = [{ x: 100, y: 100, radius: 20, velocityX: 5, velocityY: 0, gravity: 0.5, color: 'red', friction: 0.9 }];
+let gravityEnabled = true;
+
+function createBall(x, y, color = null) {
+  const colors = ['red','blue','green','orange','purple','cyan'];
+  return {
+    x, y,
+    radius: 15 + Math.random() * 15,
+    velocityX: -5 + Math.random() * 10,
+    velocityY: -10 + Math.random() * 5,
+    gravity: 0.5,
+    color: color || colors[Math.floor(Math.random() * colors.length)],
+    friction: 0.8 + Math.random() * 0.1
+  };
+}
+
+function animate() {
+  ctx.fillStyle = 'rgba(0,0,0,0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  balls.forEach(ball => {
+    if (gravityEnabled) ball.velocityY += ball.gravity;
+    ball.x += ball.velocityX;
+    ball.y += ball.velocityY;
+
+    // bounce off walls
+    if (ball.x + ball.radius > canvas.width) { ball.x = canvas.width - ball.radius; ball.velocityX *= -ball.friction; }
+    if (ball.x - ball.radius < 0) { ball.x = ball.radius; ball.velocityX *= -ball.friction; }
+    if (ball.y + ball.radius > canvas.height) { ball.y = canvas.height - ball.radius; ball.velocityY *= -ball.friction; if (Math.abs(ball.velocityY) < 0.5) ball.velocityY = 0; }
+    if (ball.y - ball.radius < 0) { ball.y = ball.radius; ball.velocityY *= -ball.friction; }
+
+    ctx.save();
+    // shadow
+    ctx.beginPath();
+    ctx.arc(ball.x+2, ball.y+2, ball.radius, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.fill();
+    // main ball
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+    ctx.fillStyle = ball.color;
+    ctx.fill();
+    // highlight
+    ctx.beginPath();
+    ctx.arc(ball.x - ball.radius/3, ball.y - ball.radius/3, ball.radius/4, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.fill();
+    ctx.restore();
+  });
+
+  requestAnimationFrame(animate);
+}
+
+function resetBall() { balls = [createBall(100, 100, 'red')]; }
+function toggleGravity() { gravityEnabled = !gravityEnabled; }
+function addRandomBall() {
+  balls.push(createBall(Math.random()*canvas.width, Math.random()*canvas.height/2));
+  if (balls.length > 10) balls.shift();
+}
+
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  balls.push(createBall(x, y));
+  if (balls.length > 10) balls.shift();
+});
+
+animate();
+</script>
+</body>
+</html>
