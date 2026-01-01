@@ -1,0 +1,251 @@
+:root {
+  --bg-main: #020403;
+  --bg-section: #060a08;
+  --bg-code: #000;
+
+  --text-main: #d4fbe6;
+  --text-muted: #7fa59a;
+
+  --green: #00ff88;
+  --cyan: #5cc8ff;
+  --amber: #ffcb6b;
+  --red: #ff5370;
+  --purple: #c792ea;
+
+  --border: #1f5e49;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* CRT scanlines */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.015),
+    rgba(255,255,255,0.015) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  opacity: 0.05;
+}
+
+body::before {
+  content: "mikedylan.com :: secure terminal session";
+  display: block;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.5rem 0;
+  border-bottom: 2px solid var(--border);
+}
+
+a:not([download]) {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+a:not([download]):hover {
+  color: var(--green);
+}
+
+a[download] {
+  color: var(--red);
+  text-decoration: none;
+}
+
+a[download]:hover {
+  color: var(--purple);
+}
+
+header,
+footer {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+main {
+  max-width: 970px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem;
+}
+
+nav ul {
+  list-style: none;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+nav li::before { content: "["; color: var(--amber); }
+nav li::after  { content: "]"; color: var(--amber); }
+
+h1, h2, h3 {
+  color: var(--green);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+h1::before { content: "root@localhost:~# "; }
+
+h1::after {
+  content: "▌";
+  animation: blink 1s steps(1) infinite;
+  margin-left: 0.2rem;
+}
+
+h2 {
+  font-size: 1.45rem;
+  margin-bottom: 1rem;
+}
+
+h2::before { content: "## "; }
+
+h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+}
+
+h3::before { content: "$ "; }
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+section {
+  margin: 2.8rem 0;
+  padding: 1.7rem 1.9rem;
+  background-color: var(--bg-section);
+  border: 3px solid var(--border);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,255,136,0.06),
+    inset 0 0 0 3px rgba(0,0,0,0.6);
+}
+
+section > h2:first-child {
+  margin-top: 0;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px dashed var(--border);
+}
+
+#posts article {
+  padding: 0.8rem 0;
+  margin-bottom: 1.2rem;
+}
+
+#posts time {
+  font-size: 0.85rem;
+  color: var(--amber);
+}
+
+#posts time::before { content: "["; }
+#posts time::after  { content: "]"; }
+
+p { margin: 0.5rem 0; }
+ul { margin-left: 1.2rem; }
+li::marker { color: var(--purple); }
+
+pre {
+  background-color: var(--bg-code);
+  padding: 1.3rem;
+  margin: 1.3rem 0;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  border: 3px solid var(--border);
+}
+
+code { color: var(--purple); }
+p code { color: var(--amber); }
+
+#pgp-keys pre {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+#pgp-keys pre code {
+  color: inherit;
+}
+
+#HAMQSL img {
+  display: block;
+  margin-top: 1rem;
+  border: none;
+  background: none;
+}
+
+footer {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+footer::after {
+  content: "© 2026 Mike Dylan Poppelaars – All rights reserved.";
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  body::before,
+  body::after,
+  header,
+  footer,
+  nav,
+  #about,
+  #posts,
+  #contact,
+  #HAMQSL,
+  iframe {
+    display: none !important;
+  }
+
+  pre {
+    background: none;
+    border: none;
+    font-size: 10pt;
+  }
+}
+
+@media (max-width: 600px) {
+  body { font-size: 0.9rem; }
+  h1 { font-size: 1.7rem; }
+}
