@@ -4,140 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="So much technology, so much progress, so little purpose and meaning.">
-  
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3639932659685728"
-     crossorigin="anonymous"></script>
-  
+  <link rel="stylesheet" href="style.css">
   <title>Mike Dylan Poppelaars</title>
-
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      margin: 0;
-    }
-
-    a {
-      color: #00BFFF;
-    }
-
-    a:hover {
-      color: #1E90FF;
-    }
-
-    header, footer {
-      padding: 1rem;
-      text-align: center;
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    nav li {
-      margin: 0;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-
-    section {
-      border: 1px solid #333;
-      background-color: #111;
-      padding: 1.5em;
-      margin-bottom: 2em;
-    }
-
-    h2 {
-      border-bottom: 2px solid #333;
-      padding-bottom: 0.3em;
-      margin-bottom: 1em;
-    }
-
-    article {
-      border-top: 1px solid #222;
-      padding-top: 1.5em;
-      margin-top: 2.5em;
-    }
-
-    article ul {
-      margin-left: 1.5rem;
-      line-height: 1.6;
-    }
-
-    article li {
-      margin-bottom: 0.5rem;
-    }
-
-    article p {
-      text-align: justify;
-      line-height: 1.6;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 1rem 0;
-    }
-
-    .image-row {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      align-items: flex-start;
-    }
-
-    .image-row img {
-      height: auto;       
-      max-width: 260px;  
-      width: auto;        
-    }
-
-
-    pre {
-      overflow-x: auto;
-      white-space: pre;
-      font-size: 0.85rem;
-      background-color: #000;
-      padding: 1em;
-      border: 1px solid #333;
-    }
-
-    .status.active {
-      color: limegreen;
-      font-weight: bold;
-      margin-left: 10px;
-    }
-
-    /* Mobile tweaks */
-    @media (max-width: 600px) {
-      .image-row {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .image-row img {
-       max-width: 100%;
-      }
-    } 
-
-  </style>
 </head>
 
-<body>
 
+<body>
 <header>
-  <h1>Härzlech Wöuckomma</h1>
+  <h1>./mikedylan.sh</h1>
   <nav>
     <ul>
       <li><a href="#about">About Me</a></li>
@@ -150,7 +24,6 @@
 </header>
 
 <main>
-
   <section id="about">
     <h2>About Me</h2>
     <p>
@@ -162,8 +35,8 @@
     <h2>Posts</h2>
 
     <article>
-      <h3><a href="hf_bands.html">• HF-Bands</a></h3>
-      <p>Posted on: <time datetime="2025-12-29">December 29, 2025</time></p>
+      <h3><a href="posts/hf_bands.html">HF-Bands</a></h3>
+      <p>Last edited: <time datetime="2025-12-29">December 29, 2025</time></p>
       <p>
         Created a compact table to summarize relevant high frequency bands. Ham bands above 10 Mhz typically use USB and below 10 Mhz LSB.
         Lower parts of the bands are typically CW.
@@ -171,95 +44,40 @@
     </article>
 
     <article>
-      <h3>• Nomad Network</h3>
-      <p>Posted on: <time datetime="2025-12-24">December 24, 2025</time></p>
+      <h3><a href="posts/nomadnet.html">Nomadnet</a></h3>
+      <p>Last edited: <time datetime="2025-12-24">December 24, 2025</time></p>
       <p>
-        <a href="https://github.com/markqvist/NomadNet">Official NomadNet GitHub</a>
+        Private, resilient mesh communication built on Reticulum and LXMF.
       </p>
-      <p>
-        Nomad Network allows you to build private and resilient communications platforms that are in complete control and ownership 
-        of the people that use them. No signups, no agreements, no handover of any data, no permissions and gatekeepers.
-        Nomad Network is build on LXMF and Reticulum, which together provides the cryptographic mesh functionality and peer-to-peer message 
-        routing that Nomad Network relies on. This foundation also makes it possible to use the program over a very wide variety of communication mediums, from packet radio to fiber optics.
-      </p>
-      <p>
-        Nomad Network does not need any connections to the public internet to work. In fact, it doesn't even need an IP or Ethernet network. You can use it entirely over packet radio, 
-        LoRa or even serial lines. But if you wish, you can bridge islanded networks over the Internet or private ethernet networks, or you can build networks running completely over 
-        the Internet. The choice is yours. Since Nomad Network uses Reticulum, it is efficient enough to run even over extremely low-bandwidth medium, and has been succesfully used over 300bps radio links.
-      </p>
-      <p>
-        The easiest way to get started using Nomadnet is to download it using a package manager like 'pip'. It can be launched by typing nomadnet in the terminal. The application is entirely
-        terminal based. There is a very good talk from markqvist, the creater of Nomadnet, that explains the underlying network stack called Reticulum. I suggest watching that on Youtube 
-        <a href="https://www.youtube.com/watch?v=pnyuSWy66cI">here</a> and reading the official Nomadnet Github linked above.
-      </p> 
-      <p>
-        To get really familiar with Nomadnet and Reticulum, the best way is to install Nomadnet with pip as described above and go through the 'Guide' tab at the top of the screen.
-      </p>
-      <p>
-        My LXMF is in the Local Peer Info of the screenshot. I host a Pi node, you can add it as a TCP Client Interface.
-      </p>
-      <img src="files/nomadnet.png" alt="Nomad Network">
     </article>
 
     <article>
-      <h3>• MeshCore</h3>
-      <p>Posted on: <time datetime="2025-12-23">December 23, 2025</time></p>
-      <p>
-        <a href="https://meshcore.co.uk/">Official MeshCore Website</a>
-      </p>
+      <h3><a href="posts/meshcore.html">Meshcore</a></h3>
+      <p>Last edited: <time datetime="2025-12-20">December 20, 2025</time></p>
       <p>
         MeshCore is a multi platform system for enabling secure text based communications utilising LoRa radio hardware. It can be used for Off-Grid Communication, 
         Emergency Response & Disaster Recovery, Outdoor Activities, Tactical Security including law enforcement and private security and also IoT sensor networks.
       </p>
-      <p>MeshCore is free and open source:</p>
-
-      <ul>
-        <li>
-          MeshCore is the routing and firmware, available on GitHub under the MIT license
-        </li>
-        <li>
-          There are clients made by the community, such as web clients; these are free to use, and some are open source
-        </li>
-        <li>
-          The cross-platform mobile app developed by Liam Cottle for Android, iOS, and PC is free to download and use
-        </li>
-        <li>
-          The T-Deck firmware, developed by Scott at Ripple Radios (the creator of MeshCore), is free to flash on your devices and use
-        </li>
-      </ul>
-      
-      <p>
-        I currently run a repeater in the attic and am working on a solar roof node. I can recommend the Heltec V4 (ESP32-S3R2) 
-        and the Heltec T114v2 (nRF52840) from the official Heltec Automation AliExpress store.
-      </p>
-      <div class="image-row">
-        <img src="files/contact_meshcore.png" alt="Meshcore contact">
-        <img src="files/map_meshcore.jpeg" alt="Meshcore map">
-      </div>
-      <p>
-        In the official Meshcore Github in the meshcore_py repo there is a serial_pingbot.py and many more cool python templates (https://github.com/meshcore-dev/meshcore_py/tree/main/examples). 
-        I needed a pingbot that works over BLE so I adapted the script to work over BLE. It's in my Github.
-      </p>
     </article>
 
     <article>
-      <h3>• GPG Cheat Sheet</h3>
-      <p>Posted on: <time datetime="2025-11-30">November 30, 2025</time></p>
+      <h3>GPG Cheat Sheet</h3>
+      <p>Last edited: <time datetime="2025-11-30">November 30, 2025</time></p>
       <p><a href="files/gpg_cheat_sheet_11_2025.txt" download>gpg_cheat_sheet_11_2025.txt</a></p>
       <p><a href="files/gpg_cheat_sheet_11_2025.txt.sig" download>gpg_cheat_sheet_11_2025.txt.sig</a></p>
     </article>
 
     <article>
-      <h3><a href="freq_lambda.html">• Frequency/Wavelength conversion</a></h3>
-      <p>Posted on: <time datetime="2025-10-29">October 29, 2025</time></p>
+      <h3><a href="posts/freq_lambda.html">Frequency/Wavelength conversion</a></h3>
+      <p>Last edited: <time datetime="2025-10-29">October 29, 2025</time></p>
       <p>
         Simple frequency to wavelength of electromagnetic waves and vice versa converter in Javascript.
       </p>
     </article>
 
     <article>
-      <h3><a href="bouncing_ball.html">• Bouncing balls in gravity</a></h3>
-      <p>Posted on: <time datetime="2025-10-15">October 15, 2025</time></p>
+      <h3><a href="posts/bouncing_ball.html">Bouncing balls in gravity</a></h3>
+      <p>Last edited: <time datetime="2025-10-15">October 15, 2025</time></p>
       <p>
         A simple simulation of bouncing balls with basic collision detection and gravity. I wanted to get a little bit more familiar
         with Javascript. This is actually my first Javascript program :D
@@ -267,8 +85,8 @@
     </article>
 
     <article>
-      <h3>• Website launch</h3>
-      <p>Posted on: <time datetime="2025-02-07">February 7, 2025</time></p>
+      <h3>Website launch</h3>
+      <p>Last edited: <time datetime="2025-02-07">February 7, 2025</time></p>
     </article>
 
   </section>
@@ -293,6 +111,12 @@
     <h2>PGP Keys</h2>
 
     <h3>Public Key <span class="status active">(Active)</span></h3>
+
+    <p>
+      <a href="files/public-key.asc" download>
+        [ download public-key.asc ]
+      </a>
+    </p>
 
     <pre><code>
 -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -332,7 +156,7 @@ GEtqGlHfTtAUlv4A/jxUe5PgPaSXLuQmJUP87CQykqDMkd4H3XSt05ZEibcL
 </main>
 
 <footer>
-  <p>&copy; 2025 Mike Dylan Poppelaars</p>
+  <p><a href="#about">← Back to top</a></p>
 </footer>
 
 </body>
