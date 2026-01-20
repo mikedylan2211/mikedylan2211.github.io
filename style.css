@@ -170,6 +170,30 @@ section > h2:first-child {
 #posts time::before { content: "["; }
 #posts time::after  { content: "]"; }
 
+.meta {
+  color: var(--amber);
+  font-size: 0.9rem;
+  margin: 0.2rem 0 0.8rem;
+}
+
+.meta time::before { content: "["; }
+.meta time::after  { content: "]"; }
+
+.actions {
+  margin-top: 0.7rem;
+  font-size: 0.95rem;
+}
+
+.actions a {
+  margin: 0 0.35rem;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.6rem;
+}
+
 p { margin: 0.5rem 0; }
 ul { margin-left: 1.2rem; }
 li::marker { color: var(--purple); }
@@ -196,7 +220,13 @@ p code { color: var(--amber); }
 }
 
 #pgp-keys pre code {
-  color: inherit;
+  color: --amber;
+}
+
+@media (max-width: 600px) {
+  body { font-size: 0.9rem; }
+  h1 { font-size: 1.6rem; }
+  pre { font-size: 0.82rem; }
 }
 
 #HAMQSL img {
