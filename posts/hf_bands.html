@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HF Bands - Mike Dylan Poppelaars</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Reference table for HF / shortwave bands plus a curated list of interesting frequencies (VOLMET, time stations, weatherfax, etc.).">
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.1rem;
+      background-color: var(--bg-code);
+      border: 2px solid var(--border);
+    }
+
+    th,
+    td {
+      padding: 0.75rem 0.9rem;
+      border: 1px solid var(--border);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    thead th {
+      color: var(--text-muted);
+      background-color: rgba(0, 255, 136, 0.05);
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: rgba(0, 255, 136, 0.03);
+    }
+
+    td.freq {
+      white-space: nowrap;
+      color: var(--amber);
+    }
+
+    td.band {
+      color: var(--green);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .kbd {
+      color: var(--amber);
+    }
+
+    @media (max-width: 600px) {
+      th, td { padding: 0.6rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>./hf_bands.sh</h1>
+    <p class="meta">Last edited: <time datetime="2025-10-29">October 29, 2025</time></p>
+
+    <p><a href="../index.html">← Back to home</a></p>
+  </header>
+
+  <main>
+    <section>
+      <h2>HF bands reference</h2>
+      <p class="hint">
+        Ranges are approximate and region-dependent. For actual operating, always check your local band plan.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Band</th>
+            <th>Frequency range (MHz)</th>
+            <th>Type / allocations</th>
+            <th>Typical uses / notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="band">160 m</td>
+            <td class="freq">1.8 – 2.0</td>
+            <td>Amateur (region-dependent)</td>
+            <td>DX at night; NVIS for local comms; narrow bandwidths; noisy but fun.</td>
+          </tr>
+          <tr>
+            <td class="band">120 m</td>
+            <td class="freq">2.3 – 2.495</td>
+            <td>International broadcast (ITU)</td>
+            <td>"Tropical band" broadcasting; technically MF but often listed with shortwave.</td>
+          </tr>
+          <tr>
+            <td class="band">90 m</td>
+            <td class="freq">3.2 – 3.4</td>
+            <td>International broadcast (ITU)</td>
+            <td>Tropical broadcasts; mainly nighttime/early morning.
+            </td>
+          </tr>
+          <tr>
+            <td class="band">80 m</td>
+            <td class="freq">3.5 – 4.0</td>
+            <td>Amateur / shared (region-dependent)</td>
+            <td>Nighttime DX; solid regional propagation; allocation differences by ITU region.</td>
+          </tr>
+          <tr>
+            <td class="band">75 m</td>
+            <td class="freq">3.9 – 4.0</td>
+            <td>International broadcast (ITU)</td>
+            <td>Mostly Eastern Hemisphere after dark; overlaps 80 m amateur in some regions.</td>
+          </tr>
+          <tr>
+            <td class="band">60 m (broadcast)</td>
+            <td class="freq">4.75 – 4.995</td>
+            <td>International broadcast (ITU)</td>
+            <td>Tropical local broadcasts; aviation weather and time signals nearby.</td>
+          </tr>
+          <tr>
+            <td class="band">60 m (amateur)</td>
+            <td class="freq">≈5.332 – 5.405</td>
+            <td>Amateur (often channelized)</td>
+            <td>Rules vary by country; great "in-between" propagation when 40 m is long and 80 m is short.</td>
+          </tr>
+          <tr>
+            <td class="band">49 m</td>
+            <td class="freq">5.9 – 6.2</td>
+            <td>International broadcast (ITU)</td>
+            <td>Good year-round nighttime band; weak daytime long-distance.</td>
+          </tr>
+          <tr>
+            <td class="band">41 m / 40 m</td>
+            <td class="freq">7.0 – 7.45</td>
+            <td>Broadcast + Amateur (region-dependent)</td>
+            <td>41 m broadcast ~7.2–7.45 MHz; 40 m amateur = classic night DX + NVIS.
+            </td>
+          </tr>
+          <tr>
+            <td class="band">31 m</td>
+            <td class="freq">9.4 – 9.9</td>
+            <td>International broadcast (ITU)</td>
+            <td>Busy international broadcast band; often strong evenings/nights.</td>
+          </tr>
+          <tr>
+            <td class="band">30 m</td>
+            <td class="freq">10.100 – 10.150</td>
+            <td>Amateur (IARU)</td>
+            <td>CW + data only; reliable for regional and long-haul.
+            </td>
+          </tr>
+          <tr>
+            <td class="band">25 m</td>
+            <td class="freq">11.6 – 12.1</td>
+            <td>International broadcast (ITU)</td>
+            <td>Often good around sunset and during summer daytime.</td>
+          </tr>
+          <tr>
+            <td class="band">22 m</td>
+            <td class="freq">13.57 – 13.87</td>
+            <td>International broadcast (ITU)</td>
+            <td>Similar feel to 19 m; daytime band with seasonal variation.</td>
+          </tr>
+          <tr>
+            <td class="band">20 m</td>
+            <td class="freq">14.000 – 14.350</td>
+            <td>Amateur (IARU) + other services</td>
+            <td>Primary long-distance DX band; excellent daytime propagation.</td>
+          </tr>
+          <tr>
+            <td class="band">19 m</td>
+            <td class="freq">15.1 – 15.83</td>
+            <td>International broadcast (ITU)</td>
+            <td>Strong daytime performance; includes time/standard-frequency stations nearby.</td>
+          </tr>
+          <tr>
+            <td class="band">17 m</td>
+            <td class="freq">18.068 – 18.168</td>
+            <td>Amateur (IARU)</td>
+            <td>Good daytime DX and sunset paths; quieter than adjacent bands.</td>
+          </tr>
+          <tr>
+            <td class="band">16 m</td>
+            <td class="freq">17.48 – 17.9</td>
+            <td>International broadcast (ITU)</td>
+            <td>Daytime band; can open surprisingly far with decent solar conditions.</td>
+          </tr>
+          <tr>
+            <td class="band">15 m</td>
+            <td class="freq">21.000 – 21.450</td>
+            <td>Amateur (IARU) + some broadcast</td>
+            <td>Daytime DX during moderate/high solar activity; quiet at night.
+            </td>
+          </tr>
+          <tr>
+            <td class="band">13 m</td>
+            <td class="freq">21.45 – 21.85</td>
+            <td>International broadcast (ITU)</td>
+            <td>Mostly daytime; can be erratic; minimal night reception.
+            </td>
+          </tr>
+          <tr>
+            <td class="band">10 m</td>
+            <td class="freq">28.000 – 29.700</td>
+            <td>Amateur (IARU)</td>
+            <td>VHF-like at solar maxima; excellent daytime DX when it opens.</td>
+          </tr>
+          <tr>
+            <td class="band">HF overall</td>
+            <td class="freq">3 – 30</td>
+            <td>ITU High Frequency band</td>
+            <td>Broadcasting, amateur, maritime, aero, and fixed services; ionospheric skywave propagation.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="hint">
+        <span class="kbd">Tip:</span> If you’re tuning around, try <code>USB</code> for aviation/maritime services, <code>AM</code> for broadcasters,
+        and <code>CW</code> / narrow filters for beacons and time stations.
+      </p>
+    </section>
+
+    <section>
+      <h2>Interesting HF frequencies to listen for</h2>
+      <p class="hint">
+        These are well-known, “sticky” spots that are fun to check when you want quick proof that HF is alive.
+        Availability varies by region and time of day.
+      </p>
+
+      <h3>VOLMET (aviation weather)</h3>
+      <ul>
+        <li><strong>Shannon VOLMET</strong>: <code>3413</code>, <code>5505</code>, <code>8957</code>, <code>13264 kHz</code> (USB)</li>
+        <li><strong>RAF VOLMET (UK military)</strong>: <code>5450</code>, <code>11253 kHz</code> (USB) — heard widely in Europe when conditions are right</li>
+      </ul>
+
+      <h3>Time / frequency stations</h3>
+      <ul>
+        <li><strong>WWV (USA, NIST)</strong>: <code>2.5</code>, <code>5</code>, <code>10</code>, <code>15</code>, <code>20 MHz</code> (AM)</li>
+        <li><strong>CHU (Canada, NRC)</strong>: <code>3330</code>, <code>7850</code>, <code>14670 kHz</code> (time signals)</li>
+      </ul>
+
+      <h3>Weatherfax (RADIOFAX)</h3>
+      <ul>
+        <li><strong>USCG Boston (NMF) Atlantic</strong>: <code>4235</code> (night), <code>6340.5</code>, <code>9110</code>, <code>12750 kHz</code> (fax / charts)</li>
+      </ul>
+
+      <h3>Maritime HF distress / calling</h3>
+      <ul>
+        <li><strong>HF voice distress</strong> (commonly listed): <code>4125</code>, <code>6215</code>, <code>8291</code>, <code>12290</code>, <code>16420 kHz</code>
+          <span class="hint">(USB; actual monitoring practices vary by coast stations)</span>
+        </li>
+      </ul>
+
+      <h3>Bonus</h3>
+      <ul>
+        <li><strong>HFDL (aircraft data link)</strong>: try scanning around <code>8–11 MHz</code> at night and <code>11–18 MHz</code> by day (digital bursts in ~3 kHz channels).</li>
+        <li><strong>Shortwave broadcasters</strong>: evenings on <code>49 m</code> and <code>41 m</code>; daytime on <code>19 m</code> and <code>16 m</code>.
+          <span class="hint">A web schedule helps a lot, since broadcasters move frequencies seasonally.</span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="../index.html">← Back to home</a></p>
+  </footer>
+</body>
+</html>

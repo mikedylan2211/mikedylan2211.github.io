@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Simple conversion program for frequencies and wavelengths of electromagnetic radiation in vacuum.">
+<title>Frequency-Wavelength Converter - Mike Dylan Poppelaars</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 800px) {
+  .layout {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.converter {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--bg-section);
+  border: 2px solid var(--border);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  background-color: var(--bg-code);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.result {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.result small {
+  display: block;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.info {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background-color: var(--bg-section);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+code {
+  background: var(--bg-code);
+  padding: 0.12rem 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>./frequency_wavelength_converter.sh</h1>
+  <p class="meta">Last edited: <time datetime="2025-10-29">October 29, 2025</time></p>
+  <p><a href="../index.html">← Back to home</a></p>
+  <p class="actions">
+    <span class="hint">Tip: you can type scientific notation like <code>7.1e6</code> for 7.1 MHz.</span>
+  </p>
+</header>
+
+<main>
+  <section>
+  
+    
+    <p>
+      Converts electromagnetic frequency and wavelength using <code>λ = c / f</code>.
+      Shows both a readable SI form and the raw value.
+    </p>
+  
+
+  <div class="layout">
+    <div class="converter">
+      <label for="frequency">Frequency <span class="hint">(Hz)</span></label>
+      <input type="number" id="frequency" placeholder="e.g. 7.1e6" step="any" min="0" inputmode="decimal">
+      <div class="result" id="wavelengthResult">Wavelength will appear here</div>
+    </div>
+
+    <div class="converter">
+      <label for="wavelength">Wavelength <span class="hint">(meters)</span></label>
+      <input type="number" id="wavelength" placeholder="e.g. 0.125" step="any" min="0" inputmode="decimal">
+      <div class="result" id="frequencyResult">Frequency will appear here</div>
+    </div>
+  </div>
+
+  <div class="info">
+    <strong>Constants/notes</strong><br>
+    <span>Speed of light (vacuum): <code>c = 299,792,458 m/s</code></span><br>
+    <span>Formula: <code>λ (m) = c / f (Hz)</code> and <code>f (Hz) = c / λ (m)</code></span><br>
+    <span class="hint">Enter a value in either field; the other updates automatically.</span>
+  </div>
+  </section>
+</main>
+
+<footer>
+  <p><a href="../index.html">← Back to home</a></p>
+</footer>
+
+<script>
+const SPEED_OF_LIGHT = 299792458;
+
+const frequencyInput = document.getElementById('frequency');
+const wavelengthInput = document.getElementById('wavelength');
+const wavelengthResult = document.getElementById('wavelengthResult');
+const frequencyResult = document.getElementById('frequencyResult');
+
+function isFinitePositive(x) {
+  return Number.isFinite(x) && x > 0;
+}
+
+function formatScientific(x, sig = 6) {
+  // 6 significant digits by default, no trailing junk.
+  if (!Number.isFinite(x)) return '—';
+  return x.toExponential(sig - 1).replace(/e\+?(-?)0*(\d+)/, 'e$1$2');
+}
+
+function formatSI(x, unit) {
+  // Friendly SI prefix formatting.
+  if (!Number.isFinite(x)) return '—';
+  const prefixes = [
+    { p: 1e12, s: 'T' },
+    { p: 1e9,  s: 'G' },
+    { p: 1e6,  s: 'M' },
+    { p: 1e3,  s: 'k' },
+    { p: 1,    s: ''  },
+    { p: 1e-3, s: 'm' },
+    { p: 1e-6, s: 'µ' },
+    { p: 1e-9, s: 'n' },
+  ];
+
+  const abs = Math.abs(x);
+  let chosen = prefixes[prefixes.length - 1];
+  for (const pref of prefixes) {
+    if (abs >= pref.p) { chosen = pref; break; }
+  }
+
+  const val = x / chosen.p;
+  // Keep this compact but readable.
+  const shown = abs === 0 ? '0' : (val >= 100 ? val.toFixed(0) : val >= 10 ? val.toFixed(2) : val.toFixed(3));
+  return `${shown} ${chosen.s}${unit}`;
+}
+
+function frequencyToWavelength(frequencyHz) {
+  return isFinitePositive(frequencyHz) ? SPEED_OF_LIGHT / frequencyHz : NaN;
+}
+
+function wavelengthToFrequency(wavelengthMeters) {
+  return isFinitePositive(wavelengthMeters) ? SPEED_OF_LIGHT / wavelengthMeters : NaN;
+}
+
+function setResult(el, title, pretty, raw, extra) {
+  el.innerHTML = `${title}: ${pretty}<small>raw: ${raw}${extra ? ` · ${extra}` : ''}</small>`;
+}
+
+let suppress = false;
+
+frequencyInput.addEventListener('input', function () {
+  if (suppress) return;
+  const freq = parseFloat(this.value);
+  if (!isFinitePositive(freq)) {
+    wavelengthResult.textContent = 'Wavelength will appear here';
+    return;
+  }
+
+  const wl = frequencyToWavelength(freq);
+  suppress = true;
+  wavelengthInput.value = wl;
+  suppress = false;
+
+  setResult(
+    wavelengthResult,
+    'Wavelength',
+    formatSI(wl, 'm'),
+    `${formatScientific(wl)} m`,
+    wl < 1 ? `≈ ${(wl * 100).toFixed(2)} cm` : ''
+  );
+});
+
+wavelengthInput.addEventListener('input', function () {
+  if (suppress) return;
+  const wl = parseFloat(this.value);
+  if (!isFinitePositive(wl)) {
+    frequencyResult.textContent = 'Frequency will appear here';
+    return;
+  }
+
+  const freq = wavelengthToFrequency(wl);
+  suppress = true;
+  frequencyInput.value = freq;
+  suppress = false;
+
+  setResult(
+    frequencyResult,
+    'Frequency',
+    formatSI(freq, 'Hz'),
+    `${formatScientific(freq)} Hz`,
+    wl >= 1 ? `λ = ${wl.toFixed(4)} m` : `λ = ${formatScientific(wl)} m`
+  );
+});
+</script>
+</body>
+</html>
