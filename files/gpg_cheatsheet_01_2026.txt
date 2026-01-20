@@ -1,0 +1,209 @@
+================================================================================
+                         GPG / OpenPGP CHEAT SHEET (GnuPG)
+                              Updated: 2026-01-20
+================================================================================
+
+This sheet focuses on common, practical workflows with gpg (GnuPG).
+
+Conventions
+- "recipient" = person whose public key you have.
+- KEYID can be a fingerprint, long key id, or an email UID. Prefer full fingerprints.
+- Output files: gpg will often create file.ext.gpg (binary) or file.ext.asc (ASCII).
+
+--------------------------------------------------------------------------------
+0) QUICK HELP
+--------------------------------------------------------------------------------
+# See version + where gpg stores keys:
+  gpg --version
+
+# Help for a command:
+  gpg --help
+  gpg --help-options
+
+--------------------------------------------------------------------------------
+1) KEY LISTING, GENERATION, BACKUP
+--------------------------------------------------------------------------------
+# List public / secret keys:
+  gpg --list-keys
+  gpg --list-secret-keys
+  gpg --list-secret-keys --keyid-format LONG
+
+# Show fingerprints (ALWAYS verify fingerprints out-of-band):
+  gpg --fingerprint <email|KEYID>
+
+# Generate a new key interactively:
+  gpg --full-generate-key
+
+# Edit a key (trust, add uid, set expire, etc.):
+  gpg --edit-key <email|KEYID>
+
+# Create a revocation certificate (DO THIS once per key, store offline):
+  gpg --output revoke_<KEYID>.asc --gen-revoke <KEYID>
+
+# Backup secret keys (be careful; store encrypted/offline):
+  gpg --armor --export-secret-keys <KEYID> > secretkey_<KEYID>.asc
+  gpg --armor --export-secret-subkeys <KEYID> > subkeys_<KEYID>.asc
+
+# Backup the public key (safe to share):
+  gpg --armor --export <KEYID> > publickey_<KEYID>.asc
+
+--------------------------------------------------------------------------------
+2) IMPORT / EXPORT / KEY SERVERS
+--------------------------------------------------------------------------------
+# Import a key:
+  gpg --import someone.asc
+
+# Import and show what changed:
+  gpg --import --import-options show-only someone.asc
+
+# Fetch from a keyserver (example: keys.openpgp.org):
+  gpg --keyserver keys.openpgp.org --recv-keys <KEYID>
+
+# Upload your public key to a keyserver:
+  gpg --keyserver keys.openpgp.org --send-keys <KEYID>
+
+# After import, verify fingerprint, then set trust (interactive):
+  gpg --fingerprint <KEYID>
+  gpg --edit-key <KEYID>
+    trust
+
+--------------------------------------------------------------------------------
+3) ENCRYPTION (PUBLIC-KEY) AND DECRYPTION
+--------------------------------------------------------------------------------
+# Encrypt a file to ONE recipient:
+  gpg --encrypt --recipient recipient@example.com file.txt
+
+# Encrypt to MULTIPLE recipients (each gets access):
+  gpg --encrypt -r alice@example.com -r bob@example.com file.txt
+
+# Encrypt to recipient AND yourself (recommended so YOU can decrypt later):
+  gpg --encrypt -r recipient@example.com -r your@email.com file.txt
+
+# ASCII-armored encryption (good for email / copy-paste):
+  gpg --armor --encrypt -r recipient@example.com file.txt
+
+# Decrypt to stdout:
+  gpg --decrypt file.txt.gpg
+
+# Decrypt to a file:
+  gpg --output file.txt --decrypt file.txt.gpg
+
+# If gpg asks which secret key to use, it usually means:
+# - you don't have the matching secret key, or
+# - you encrypted only to someone else (not to yourself).
+
+--------------------------------------------------------------------------------
+4) SYMMETRIC ENCRYPTION (PASSWORD-BASED)
+--------------------------------------------------------------------------------
+# Encrypt with a passphrase (no public keys needed):
+  gpg --symmetric file.txt
+
+# Stronger defaults (modern cipher + more KDF work):
+  gpg --symmetric --cipher-algo AES256 --s2k-digest-algo SHA512 \
+      --s2k-mode 3 --s2k-count 65011712 file.txt
+
+# ASCII armored symmetric encryption:
+  gpg --armor --symmetric file.txt
+
+# Decrypt symmetric:
+  gpg --output file.txt --decrypt file.txt.gpg
+
+--------------------------------------------------------------------------------
+5) SIGNING (AUTHENTICITY / INTEGRITY)
+--------------------------------------------------------------------------------
+# Detached signature (recommended for files/releases):
+  gpg --detach-sign file.tar.gz              # creates file.tar.gz.sig
+  gpg --armor --detach-sign file.tar.gz      # creates file.tar.gz.asc
+
+# Clear-sign text (human-readable + signature block):
+  gpg --clearsign message.txt                # creates message.txt.asc
+
+# Sign a file and wrap it (not detached):
+  gpg --sign file.txt                        # creates file.txt.gpg
+
+# Choose a specific signing key:
+  gpg --local-user your@email.com --detach-sign file.tar.gz
+
+# Verify signatures:
+  gpg --verify file.tar.gz.sig file.tar.gz
+  gpg --verify message.txt.asc
+
+--------------------------------------------------------------------------------
+6) ENCRYPT + SIGN (COMMON WORKFLOWS)
+--------------------------------------------------------------------------------
+# Encrypt AND sign for a recipient:
+  gpg --encrypt --sign -r recipient@example.com file.txt
+
+# Encrypt+sign AND armor:
+  gpg --armor --encrypt --sign -r recipient@example.com file.txt
+
+# Decrypt (and gpg will verify embedded signatures automatically):
+  gpg --output file.txt --decrypt file.txt.gpg
+
+# NOTE: verification only proves "signed by key X".
+# You still must decide whether you trust that key (fingerprint + trust model).
+
+--------------------------------------------------------------------------------
+7) WORKED EXAMPLES
+--------------------------------------------------------------------------------
+Example A: Send an encrypted note via email (ASCII armor)
+  echo "meet at 19:00" > note.txt
+  gpg --armor --encrypt -r alice@example.com note.txt
+  # Send note.txt.asc contents.
+
+Example B: Send an encrypted AND signed document
+  gpg --armor --encrypt --sign -r bob@example.com report.pdf
+  # Output: report.pdf.asc (bob can decrypt; bob can see your signature).
+
+Example C: Verify a release + then decrypt a config
+  gpg --verify app-v1.2.3.tar.gz.asc app-v1.2.3.tar.gz
+  gpg --output config.yaml --decrypt config.yaml.gpg
+
+Example D: Encrypt a backup for future-you (public-key)
+  tar -cf backup.tar Documents/
+  gpg --encrypt -r your@email.com backup.tar
+
+Example E: Password-encrypt a quick file (symmetric)
+  gpg --armor --symmetric secrets.txt
+  # Output: secrets.txt.asc
+
+--------------------------------------------------------------------------------
+8) KEY HYGIENE (GOOD PRACTICES)
+--------------------------------------------------------------------------------
+# Always verify fingerprints out-of-band before trusting a key.
+# Show a key in a compact way:
+  gpg --list-keys --keyid-format LONG
+  gpg --fingerprint <KEYID>
+
+# Check what a key claims (uids) and whether it is expired/revoked.
+
+# Refresh keys from keyserver (if you use one):
+  gpg --refresh-keys
+
+# Set key expiration (recommended) and rotate subkeys.
+# Use separate subkeys for signing/encryption if you want a safer setup.
+
+--------------------------------------------------------------------------------
+9) USEFUL FLAGS
+--------------------------------------------------------------------------------
+  -a, --armor              ASCII output (".asc")
+  -o, --output FILE        write output to FILE
+  -r, --recipient UID      encrypt for UID
+  -u, --local-user UID     use UID for signing
+  -e, --encrypt            encrypt data
+  -d, --decrypt            decrypt data
+  -s, --sign               sign data
+  -b, --detach-sign        detached signature
+  --clearsign              clear-signed text
+  --pinentry-mode loopback (advanced; for scripted passphrase input)
+
+--------------------------------------------------------------------------------
+10) IF YOU WANT A SIGNATURE FOR THIS FILE
+--------------------------------------------------------------------------------
+# Detached signature (ASCII) for this cheat sheet:
+  gpg --armor --detach-sign gpg_cheatsheet_01_2026.txt
+
+# Verify it:
+  gpg --verify gpg_cheatsheet_01_2026.txt.asc gpg_cheatsheet_01_2026.txt
+
+================================================================================
