@@ -60,6 +60,7 @@ button:hover {
     <div class="controls">
       <button onclick="resetBall()">Reset Ball</button>
       <button onclick="toggleGravity()">Toggle Gravity</button>
+      <button onclick="toggleFriction()">Toggle Friction</button>
       <button onclick="addRandomBall()">Add Random Ball</button>
     </div>
   </section>
@@ -75,6 +76,7 @@ const ctx = canvas.getContext('2d');
 
 let balls = [{ x: 100, y: 100, radius: 20, velocityX: 5, velocityY: 0, gravity: 0.5, color: 'red', friction: 0.9 }];
 let gravityEnabled = true;
+let frictionEnabled = true;
 
 function createBall(x, y, color = null) {
   const colors = ['red','blue','green','orange','purple','cyan'];
@@ -99,10 +101,11 @@ function animate() {
     ball.y += ball.velocityY;
 
     // bounce off walls
-    if (ball.x + ball.radius > canvas.width) { ball.x = canvas.width - ball.radius; ball.velocityX *= -ball.friction; }
-    if (ball.x - ball.radius < 0) { ball.x = ball.radius; ball.velocityX *= -ball.friction; }
-    if (ball.y + ball.radius > canvas.height) { ball.y = canvas.height - ball.radius; ball.velocityY *= -ball.friction; if (Math.abs(ball.velocityY) < 0.5) ball.velocityY = 0; }
-    if (ball.y - ball.radius < 0) { ball.y = ball.radius; ball.velocityY *= -ball.friction; }
+    const bounceFriction = frictionEnabled ? ball.friction : 1;
+    if (ball.x + ball.radius > canvas.width) { ball.x = canvas.width - ball.radius; ball.velocityX *= -bounceFriction; }
+    if (ball.x - ball.radius < 0) { ball.x = ball.radius; ball.velocityX *= -bounceFriction; }
+    if (ball.y + ball.radius > canvas.height) { ball.y = canvas.height - ball.radius; ball.velocityY *= -bounceFriction; if (Math.abs(ball.velocityY) < 0.5) ball.velocityY = 0; }
+    if (ball.y - ball.radius < 0) { ball.y = ball.radius; ball.velocityY *= -bounceFriction; }
 
     ctx.save();
     // shadow
@@ -128,6 +131,7 @@ function animate() {
 
 function resetBall() { balls = [createBall(100, 100, 'red')]; }
 function toggleGravity() { gravityEnabled = !gravityEnabled; }
+function toggleFriction() { frictionEnabled = !frictionEnabled; }
 function addRandomBall() {
   balls.push(createBall(Math.random()*canvas.width, Math.random()*canvas.height/2));
   if (balls.length > 10) balls.shift();
@@ -135,8 +139,10 @@ function addRandomBall() {
 
 canvas.addEventListener('click', e => {
   const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX;
+  const y = (e.clientY - rect.top) * scaleY;
   balls.push(createBall(x, y));
   if (balls.length > 10) balls.shift();
 });
