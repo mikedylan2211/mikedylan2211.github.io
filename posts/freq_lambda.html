@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Simple conversion program for frequencies and wavelengths of electromagnetic radiation in vacuum.">
-<title>Frequency-Wavelength Converter - Mike Dylan Poppelaars</title>
+<meta name="description" content="Unit conversion tool for frequency/wavelength and temperature (Celsius, Fahrenheit, Kelvin).">
+<title>Unit Conversion - Mike Dylan Poppelaars</title>
 <link rel="stylesheet" href="../style.css">
 <style>
 .layout {
@@ -43,6 +43,16 @@ input[type="number"] {
   border-radius: 4px;
 }
 
+select {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  background-color: var(--bg-code);
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
 .result {
   margin-top: 0.5rem;
   padding: 0.5rem;
@@ -68,6 +78,19 @@ input[type="number"] {
   font-size: 0.9rem;
 }
 
+.temp-results {
+  margin-top: 0.8rem;
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 700px) {
+  .temp-results {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 code {
   background: var(--bg-code);
   padding: 0.12rem 0.35rem;
@@ -79,17 +102,14 @@ code {
 
 <body>
 <header>
-  <h1>./frequency_wavelength_converter.sh</h1>
+  <h1>./unit_conversion.sh</h1>
   <p class="meta">Last edited: <time datetime="2025-10-29">October 29, 2025</time></p>
   <p><a href="../index.html">← Back to home</a></p>
-  <p class="actions">
-    <span class="hint">Tip: you can type scientific notation like <code>7.1e6</code> for 7.1 MHz.</span>
-  </p>
 </header>
 
 <main>
   <section>
-  
+    <h2>Wavelength Converter</h2>
     
     <p>
       Converts electromagnetic frequency and wavelength using <code>λ = c / f</code>.
@@ -117,6 +137,71 @@ code {
     <span>Formula: <code>λ (m) = c / f (Hz)</code> and <code>f (Hz) = c / λ (m)</code></span><br>
     <span class="hint">Enter a value in either field; the other updates automatically.</span>
   </div>
+  </section>
+
+  <section>
+    <h2>Temperature Converter</h2>
+    <p>
+      Convert between Celsius, Fahrenheit, and Kelvin with a single input.
+    </p>
+
+    <div class="converter">
+      <label for="tempInput">Value</label>
+      <input type="number" id="tempInput" placeholder="e.g. 21" step="any" inputmode="decimal">
+
+      <label for="tempUnit">Unit</label>
+      <select id="tempUnit">
+        <option value="C">Celsius (°C)</option>
+        <option value="F">Fahrenheit (°F)</option>
+        <option value="K">Kelvin (K)</option>
+      </select>
+
+      <div class="temp-results">
+        <div class="result" id="tempCResult">Celsius will appear here</div>
+        <div class="result" id="tempFResult">Fahrenheit will appear here</div>
+        <div class="result" id="tempKResult">Kelvin will appear here</div>
+      </div>
+    </div>
+
+    <div class="info">
+      <strong>Notes</strong><br>
+      <span>Absolute zero: <code>0 K = -273.15 °C = -459.67 °F</code></span><br>
+      <span>Formulas: <code>C = (F - 32) * 5/9</code>, <code>F = C * 9/5 + 32</code>, <code>K = C + 273.15</code></span><br>
+      <span class="hint">Pick a unit, type a value, and the other two update instantly.</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Parsec Converter</h2>
+    <p>
+      Convert between parsecs, meters, and astronomical units.
+    </p>
+
+    <div class="converter">
+      <label for="distanceInput">Value</label>
+      <input type="number" id="distanceInput" placeholder="e.g. 4.2" step="any" min="0" inputmode="decimal">
+
+      <label for="distanceUnit">Unit</label>
+      <select id="distanceUnit">
+        <option value="pc">Parsec (pc)</option>
+        <option value="m">Meter (m)</option>
+        <option value="au">Astronomical Unit (AU)</option>
+      </select>
+
+      <div class="temp-results">
+        <div class="result" id="distancePcResult">Parsecs will appear here</div>
+        <div class="result" id="distanceMResult">Meters will appear here</div>
+        <div class="result" id="distanceAuResult">AU will appear here</div>
+      </div>
+    </div>
+
+    <div class="info">
+      <strong>Notes</strong><br>
+      <span>Definition: <code>1 pc = 3.0856775814913673 × 10^16 m</code></span><br>
+      <span>Definition: <code>1 AU = 149,597,870,700 m</code></span><br>
+      <span>Formulas: <code>m = pc * 3.0856775814913673e16</code>, <code>pc = m / 3.0856775814913673e16</code>, <code>AU = m / 149597870700</code></span><br>
+      <span class="hint">Pick a unit, type a value, and the other two update instantly.</span>
+    </div>
   </section>
 </main>
 
@@ -176,8 +261,8 @@ function wavelengthToFrequency(wavelengthMeters) {
   return isFinitePositive(wavelengthMeters) ? SPEED_OF_LIGHT / wavelengthMeters : NaN;
 }
 
-function setResult(el, title, pretty, raw, extra) {
-  el.innerHTML = `${title}: ${pretty}<small>raw: ${raw}${extra ? ` · ${extra}` : ''}</small>`;
+function setResult(el, title, pretty) {
+  el.textContent = `${title}: ${pretty}`;
 }
 
 let suppress = false;
@@ -198,9 +283,7 @@ frequencyInput.addEventListener('input', function () {
   setResult(
     wavelengthResult,
     'Wavelength',
-    formatSI(wl, 'm'),
-    `${formatScientific(wl)} m`,
-    wl < 1 ? `≈ ${(wl * 100).toFixed(2)} cm` : ''
+    `${formatScientific(wl)} m`
   );
 });
 
@@ -220,11 +303,98 @@ wavelengthInput.addEventListener('input', function () {
   setResult(
     frequencyResult,
     'Frequency',
-    formatSI(freq, 'Hz'),
-    `${formatScientific(freq)} Hz`,
-    wl >= 1 ? `λ = ${wl.toFixed(4)} m` : `λ = ${formatScientific(wl)} m`
+    `${formatScientific(freq)} Hz`
   );
 });
+
+const tempInput = document.getElementById('tempInput');
+const tempUnit = document.getElementById('tempUnit');
+const tempCResult = document.getElementById('tempCResult');
+const tempFResult = document.getElementById('tempFResult');
+const tempKResult = document.getElementById('tempKResult');
+
+function formatTemp(x) {
+  if (!Number.isFinite(x)) return '—';
+  const abs = Math.abs(x);
+  const digits = abs >= 1000 ? 1 : abs >= 100 ? 2 : abs >= 10 ? 2 : 3;
+  return x.toFixed(digits).replace(/\.?0+$/, '');
+}
+
+function toKelvin(value, unit) {
+  if (!Number.isFinite(value)) return NaN;
+  if (unit === 'C') return value + 273.15;
+  if (unit === 'F') return (value - 32) * 5 / 9 + 273.15;
+  return value;
+}
+
+function setTempResult(el, label, value) {
+  el.textContent = `${label}: ${value}`;
+}
+
+function updateTemperature() {
+  const value = parseFloat(tempInput.value);
+  if (!Number.isFinite(value)) {
+    tempCResult.textContent = 'Celsius will appear here';
+    tempFResult.textContent = 'Fahrenheit will appear here';
+    tempKResult.textContent = 'Kelvin will appear here';
+    return;
+  }
+
+  const k = toKelvin(value, tempUnit.value);
+  if (!Number.isFinite(k) || k < 0) {
+    tempCResult.textContent = 'Below absolute zero';
+    tempFResult.textContent = 'Below absolute zero';
+    tempKResult.textContent = 'Below absolute zero';
+    return;
+  }
+
+  const c = k - 273.15;
+  const f = c * 9 / 5 + 32;
+
+  setTempResult(tempCResult, 'Celsius', `${formatScientific(c)} °C`);
+  setTempResult(tempFResult, 'Fahrenheit', `${formatScientific(f)} °F`);
+  setTempResult(tempKResult, 'Kelvin', `${formatScientific(k)} K`);
+}
+
+tempInput.addEventListener('input', updateTemperature);
+tempUnit.addEventListener('change', updateTemperature);
+
+const PARSEC_METERS = 3.0856775814913673e16;
+const AU_METERS = 149597870700;
+
+const distanceInput = document.getElementById('distanceInput');
+const distanceUnit = document.getElementById('distanceUnit');
+const distancePcResult = document.getElementById('distancePcResult');
+const distanceMResult = document.getElementById('distanceMResult');
+const distanceAuResult = document.getElementById('distanceAuResult');
+
+function toMeters(value, unit) {
+  if (!Number.isFinite(value)) return NaN;
+  if (unit === 'pc') return value * PARSEC_METERS;
+  if (unit === 'au') return value * AU_METERS;
+  return value;
+}
+
+function updateDistance() {
+  const value = parseFloat(distanceInput.value);
+  if (!Number.isFinite(value) || value < 0) {
+    distancePcResult.textContent = 'Parsecs will appear here';
+    distanceMResult.textContent = 'Meters will appear here';
+    distanceAuResult.textContent = 'AU will appear here';
+    return;
+  }
+
+  const meters = toMeters(value, distanceUnit.value);
+  const pc = meters / PARSEC_METERS;
+  const au = meters / AU_METERS;
+
+  setResult(distancePcResult, 'Parsecs', `${formatScientific(pc)} pc`);
+  setResult(distanceMResult, 'Meters', `${formatScientific(meters)} m`);
+  setResult(distanceAuResult, 'AU', `${formatScientific(au)} AU`);
+}
+
+distanceInput.addEventListener('input', updateDistance);
+distanceUnit.addEventListener('change', updateDistance);
 </script>
 </body>
 </html>
