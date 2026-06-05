@@ -53,15 +53,6 @@ body::after {
   opacity: 0.05;
 }
 
-body::before {
-  content: "mikedylan.com :: secure terminal session";
-  display: block;
-  text-align: center;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  padding: 0.5rem 0;
-  border-bottom: 2px solid var(--border);
-}
 
 a:not([download]) {
   color: var(--cyan);
