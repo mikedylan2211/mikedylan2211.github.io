@@ -16,9 +16,9 @@ Conventions
 # See version + where gpg stores keys:
   gpg --version
 
-# Help for a command:
+# General help and a list of supported options:
   gpg --help
-  gpg --help-options
+  gpg --dump-options
 
 --------------------------------------------------------------------------------
 1) KEY LISTING, GENERATION, BACKUP

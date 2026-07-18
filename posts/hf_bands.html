@@ -16,6 +16,16 @@
       border: 2px solid var(--border);
     }
 
+    .table-scroll {
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-scroll table {
+      min-width: 700px;
+    }
+
     th,
     td {
       padding: 0.75rem 0.9rem;
@@ -70,7 +80,8 @@
         Ranges are approximate and region-dependent. For actual operating, always check your local band plan.
       </p>
 
-      <table>
+      <div class="table-scroll" role="region" aria-label="HF bands reference table" tabindex="0">
+        <table>
         <thead>
           <tr>
             <th>Band</th>
@@ -213,7 +224,8 @@
             </td>
           </tr>
         </tbody>
-      </table>
+        </table>
+      </div>
 
       <p class="hint">
         <span class="kbd">Tip:</span> If you’re tuning around, try <code>USB</code> for aviation/maritime services, <code>AM</code> for broadcasters,

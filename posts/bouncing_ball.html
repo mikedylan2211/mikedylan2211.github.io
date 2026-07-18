@@ -24,6 +24,10 @@ canvas {
   justify-content: center;
 }
 
+.simulation-hint {
+  text-align: center;
+}
+
 button {
   padding: 0.5rem 1rem;
   background: var(--bg-code);
@@ -49,13 +53,14 @@ button:hover {
 <body>
 <header>
   <h1>./bouncing_ball.sh</h1>
-  <p class="meta">Last edited: <time datetime="2025-01-20">January 20, 2026</time></p>
+  <p class="meta">Last edited: <time datetime="2026-01-20">January 20, 2026</time></p>
   <p><a href="../index.html">← Back to home</a></p>
 </header>
 
 <main>
   <section>
     <canvas id="canvas" width="800" height="500"></canvas>
+    <p class="hint simulation-hint">Click in the box to summon a ball!</p>
 
     <div class="controls">
       <button onclick="resetBall()">Reset Ball</button>
@@ -91,6 +96,99 @@ function createBall(x, y, color = null) {
   };
 }
 
+function resolveWallCollision(ball) {
+  const bounceFriction = frictionEnabled ? ball.friction : 1;
+
+  if (ball.x + ball.radius > canvas.width) {
+    ball.x = canvas.width - ball.radius;
+    ball.velocityX *= -bounceFriction;
+  }
+  if (ball.x - ball.radius < 0) {
+    ball.x = ball.radius;
+    ball.velocityX *= -bounceFriction;
+  }
+  if (ball.y + ball.radius > canvas.height) {
+    ball.y = canvas.height - ball.radius;
+    ball.velocityY *= -bounceFriction;
+    if (Math.abs(ball.velocityY) < 0.5) ball.velocityY = 0;
+  }
+  if (ball.y - ball.radius < 0) {
+    ball.y = ball.radius;
+    ball.velocityY *= -bounceFriction;
+  }
+}
+
+function resolveBallCollision(ballA, ballB) {
+  const dx = ballB.x - ballA.x;
+  const dy = ballB.y - ballA.y;
+  const minimumDistance = ballA.radius + ballB.radius;
+  const distanceSquared = dx * dx + dy * dy;
+
+  if (distanceSquared >= minimumDistance * minimumDistance) return;
+
+  const distance = Math.sqrt(distanceSquared);
+  const normalX = distance === 0 ? 1 : dx / distance;
+  const normalY = distance === 0 ? 0 : dy / distance;
+  const massA = ballA.radius * ballA.radius;
+  const massB = ballB.radius * ballB.radius;
+  const inverseMassA = 1 / massA;
+  const inverseMassB = 1 / massB;
+
+  // Separate overlapping balls in proportion to their inverse masses.
+  const overlap = minimumDistance - distance;
+  const correction = overlap / (inverseMassA + inverseMassB);
+  ballA.x -= correction * inverseMassA * normalX;
+  ballA.y -= correction * inverseMassA * normalY;
+  ballB.x += correction * inverseMassB * normalX;
+  ballB.y += correction * inverseMassB * normalY;
+
+  const relativeVelocityX = ballB.velocityX - ballA.velocityX;
+  const relativeVelocityY = ballB.velocityY - ballA.velocityY;
+  const velocityAlongNormal = relativeVelocityX * normalX + relativeVelocityY * normalY;
+
+  // The balls are already moving apart; position correction is sufficient.
+  if (velocityAlongNormal >= 0) return;
+
+  const restitution = frictionEnabled ? Math.min(ballA.friction, ballB.friction) : 1;
+  const impulseMagnitude = -(1 + restitution) * velocityAlongNormal /
+    (inverseMassA + inverseMassB);
+  const impulseX = impulseMagnitude * normalX;
+  const impulseY = impulseMagnitude * normalY;
+
+  ballA.velocityX -= impulseX * inverseMassA;
+  ballA.velocityY -= impulseY * inverseMassA;
+  ballB.velocityX += impulseX * inverseMassB;
+  ballB.velocityY += impulseY * inverseMassB;
+}
+
+function resolveBallCollisions() {
+  for (let i = 0; i < balls.length; i++) {
+    for (let j = i + 1; j < balls.length; j++) {
+      resolveBallCollision(balls[i], balls[j]);
+    }
+  }
+}
+
+function drawBall(ball) {
+  ctx.save();
+  // shadow
+  ctx.beginPath();
+  ctx.arc(ball.x+2, ball.y+2, ball.radius, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fill();
+  // main ball
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+  ctx.fillStyle = ball.color;
+  ctx.fill();
+  // highlight
+  ctx.beginPath();
+  ctx.arc(ball.x - ball.radius/3, ball.y - ball.radius/3, ball.radius/4, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.fill();
+  ctx.restore();
+}
+
 function animate() {
   ctx.fillStyle = 'rgba(0,0,0,0.1)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -99,32 +197,12 @@ function animate() {
     if (gravityEnabled) ball.velocityY += ball.gravity;
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
-
-    // bounce off walls
-    const bounceFriction = frictionEnabled ? ball.friction : 1;
-    if (ball.x + ball.radius > canvas.width) { ball.x = canvas.width - ball.radius; ball.velocityX *= -bounceFriction; }
-    if (ball.x - ball.radius < 0) { ball.x = ball.radius; ball.velocityX *= -bounceFriction; }
-    if (ball.y + ball.radius > canvas.height) { ball.y = canvas.height - ball.radius; ball.velocityY *= -bounceFriction; if (Math.abs(ball.velocityY) < 0.5) ball.velocityY = 0; }
-    if (ball.y - ball.radius < 0) { ball.y = ball.radius; ball.velocityY *= -bounceFriction; }
-
-    ctx.save();
-    // shadow
-    ctx.beginPath();
-    ctx.arc(ball.x+2, ball.y+2, ball.radius, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(0,0,0,0.2)';
-    ctx.fill();
-    // main ball
-    ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-    ctx.fillStyle = ball.color;
-    ctx.fill();
-    // highlight
-    ctx.beginPath();
-    ctx.arc(ball.x - ball.radius/3, ball.y - ball.radius/3, ball.radius/4, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-    ctx.fill();
-    ctx.restore();
+    resolveWallCollision(ball);
   });
+
+  resolveBallCollisions();
+  balls.forEach(resolveWallCollision);
+  balls.forEach(drawBall);
 
   requestAnimationFrame(animate);
 }

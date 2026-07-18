@@ -211,20 +211,29 @@ p code { color: var(--amber); }
 }
 
 #pgp-keys pre code {
-  color: --amber;
+  color: var(--amber);
 }
 
 @media (max-width: 600px) {
   body { font-size: 0.9rem; }
-  h1 { font-size: 1.6rem; }
+  h1 { font-size: 1.7rem; }
   pre { font-size: 0.82rem; }
 }
 
 #HAMQSL img {
   display: block;
+  max-width: 100%;
+  height: auto;
   margin-top: 1rem;
   border: none;
   background: none;
+}
+
+.snowflake-proxy {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  border: 0;
 }
 
 footer {
@@ -264,9 +273,4 @@ footer::after {
     border: none;
     font-size: 10pt;
   }
-}
-
-@media (max-width: 600px) {
-  body { font-size: 0.9rem; }
-  h1 { font-size: 1.7rem; }
 }

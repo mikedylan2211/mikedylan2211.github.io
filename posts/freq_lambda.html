@@ -264,13 +264,21 @@ function setResult(el, title, pretty) {
   el.textContent = `${title}: ${pretty}`;
 }
 
+function resetConversionResults() {
+  wavelengthResult.textContent = 'Wavelength will appear here';
+  frequencyResult.textContent = 'Frequency will appear here';
+}
+
 let suppress = false;
 
 frequencyInput.addEventListener('input', function () {
   if (suppress) return;
   const freq = parseFloat(this.value);
   if (!isFinitePositive(freq)) {
-    wavelengthResult.textContent = 'Wavelength will appear here';
+    suppress = true;
+    wavelengthInput.value = '';
+    suppress = false;
+    resetConversionResults();
     return;
   }
 
@@ -284,13 +292,21 @@ frequencyInput.addEventListener('input', function () {
     'Wavelength',
     `${formatScientific(wl)} m`
   );
+  setResult(
+    frequencyResult,
+    'Frequency',
+    `${formatScientific(freq)} Hz`
+  );
 });
 
 wavelengthInput.addEventListener('input', function () {
   if (suppress) return;
   const wl = parseFloat(this.value);
   if (!isFinitePositive(wl)) {
-    frequencyResult.textContent = 'Frequency will appear here';
+    suppress = true;
+    frequencyInput.value = '';
+    suppress = false;
+    resetConversionResults();
     return;
   }
 
@@ -303,6 +319,11 @@ wavelengthInput.addEventListener('input', function () {
     frequencyResult,
     'Frequency',
     `${formatScientific(freq)} Hz`
+  );
+  setResult(
+    wavelengthResult,
+    'Wavelength',
+    `${formatScientific(wl)} m`
   );
 });
 
