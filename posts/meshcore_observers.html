@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="How MeshCore observers feed letsmesh, how to set up an ESP32 repeater observer, and how MeshMapper turns wardriving data into a coverage map.">
+  <title>MeshCore Observers, letsmesh and MeshMapper - Mike Dylan Poppelaars</title>
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    .post-intro {
+      font-size: 1.05rem;
+    }
+
+    figure {
+      margin: 1.5rem 0;
+    }
+
+    figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 2px solid var(--border);
+    }
+
+    figcaption {
+      margin-top: 0.55rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .note {
+      margin: 1.2rem 0;
+      padding: 0.8rem 1rem;
+      border-left: 3px solid var(--amber);
+      background-color: var(--bg-code);
+    }
+
+    .post-links li {
+      margin-bottom: 0.35rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>./meshcore_observers.sh</h1>
+    <p class="meta">Last edited: <time datetime="2026-08-04">August 4, 2026</time></p>
+    <p><a href="../index.html">← Back to home</a></p>
+  </header>
+
+  <main>
+    <section>
+      <h2>MeshCore observers</h2>
+
+      <p class="post-intro">
+        A MeshCore repeater normally has a simple job: receive LoRa packets and pass them on.
+        An observer adds an internet connection to that setup. It still works as a repeater, but it also sends a copy of the packets it hears to an MQTT broker.
+        Services such as <a href="https://analyzer.letsmesh.net/">letsmesh</a> and <a href="https://meshmapper.net/">MeshMapper</a> can then use those reports to show what is happening on the mesh.
+      </p>
+
+      <p>
+        The mesh itself does not depend on the observer or on the internet. If the Wi-Fi connection goes down, radio traffic can still be repeated.
+        What disappears is the outside view of that traffic. I think of the observer as a window into the mesh rather than part of the window frame.
+      </p>
+
+      <p>
+        The most useful observer is a fixed node with a good antenna and a reliable internet connection.
+        One observer gives a local view. Several observers in different places make it possible to compare where a packet was heard and which route it took.
+      </p>
+    </section>
+
+    <section>
+      <h2>What letsmesh does</h2>
+
+      <p>
+        <a href="https://analyzer.letsmesh.net/">letsmesh</a> collects the MQTT reports from observers and turns them into a live MeshCore analyzer.
+        The observer page is the first place I check after setting up a node. It shows whether the node is online, when it last reported, which region it belongs to and which observer software it is running.
+        My own observer/repeater appears there as <code>mc_rep_meisterschwanden</code>.
+        At the moment, <code>BRN</code> is the only letsmesh region for Switzerland and covers the whole country, not just Bern.
+      </p>
+
+      <figure>
+        <img
+          src="../files/letsmesh-observer-status.png"
+          width="3420"
+          height="1862"
+          loading="lazy"
+          decoding="async"
+          alt="letsmesh observer status page showing online observers in the Bern region">
+        <figcaption>Observer status for the BRN region. My observer/repeater, <code>mc_rep_meisterschwanden</code>, is shown online.</figcaption>
+      </figure>
+
+      <p>
+        The packet view goes much further. For each packet it can show the type, size, first observer, number of repeats and the path through the mesh.
+        Opening a packet reveals its byte layout and the meaning of its header and path fields. This is useful when checking duplicate repeater IDs, comparing routes or finding out why a packet took an unexpected detour.
+      </p>
+
+      <figure>
+        <img
+          src="../files/letsmesh-packet-analysis.png"
+          width="3420"
+          height="1954"
+          loading="lazy"
+          decoding="async"
+          alt="letsmesh packet list and byte-by-byte MeshCore packet analysis">
+        <figcaption>A packet selected in letsmesh, with its route and byte breakdown on the right.</figcaption>
+      </figure>
+
+      <p>
+        Known public channels can also be followed in a chat-like view. A selected message can be matched with all the routes reported by the observers and drawn on a map.
+        This makes a string of hexadecimal repeater IDs much easier to understand.
+      </p>
+
+      <figure>
+        <img
+          src="../files/letsmesh-channel-routes.png"
+          width="3420"
+          height="1954"
+          loading="lazy"
+          decoding="async"
+          alt="letsmesh public channel view with reported MeshCore routes drawn on a map of Switzerland">
+        <figcaption>Public-channel traffic and the different paths by which one message reached observers.</figcaption>
+      </figure>
+
+      <p class="note">
+        An observer uploads packet data to an internet service. Public channels with known keys can be displayed, but letsmesh does not magically decrypt private channels or direct messages.
+        Even when the contents stay encrypted, packet metadata is still being shared. The operator should know what the selected MQTT service collects before enabling it.
+      </p>
+    </section>
+
+    <section>
+      <h2>Setting up an ESP32 repeater observer</h2>
+
+      <p>
+        I am describing a fresh installation on a supported ESP32 LoRa board, such as a Heltec or LilyGo model listed by the observer flasher.
+        The exact board variant matters because the display, radio and pin assignments differ. Check the label on the board instead of choosing the closest-looking entry.
+      </p>
+
+      <h3>What you need</h3>
+      <ul>
+        <li>A supported ESP32 board with a LoRa radio for the band used in your country.</li>
+        <li>A suitable antenna. Attach it before powering or transmitting with the board.</li>
+        <li>A USB data cable. Some USB cables provide power but carry no data.</li>
+        <li>A 2.4 GHz Wi-Fi network with internet access.</li>
+        <li>Chrome or Edge on a desktop computer. The browser flasher uses Web Serial, which Safari and phones do not support.</li>
+      </ul>
+
+      <h3>1. Flash the observer firmware</h3>
+      <p>
+        Open the <a href="https://analyzer.letsmesh.net/observer/onboard">letsmesh observer onboarding page</a> and follow its link to the current observer flasher.
+        Connect the board over USB, choose its exact model, and select <strong>Repeater</strong> as the role.
+        Use the current stable release unless you deliberately want to test a development build, then press <strong>Flash</strong> and grant the browser access to the serial port.
+      </p>
+
+      <p>
+        For a fresh install, the flasher may offer a merged image or an erase option. That is fine for a new board, but it can remove the existing identity and settings from a configured node.
+        When updating an observer, use the non-merged image and leave <strong>Erase device</strong> unchecked unless you really want to start again.
+      </p>
+
+      <figure>
+        <img
+          src="../files/meshcore-observer-flasher.png"
+          width="3420"
+          height="1954"
+          loading="lazy"
+          decoding="async"
+          alt="MeshCore observer browser flasher with ESP32 boards and the setup guide">
+        <figcaption>The observer flasher lists supported boards and keeps the setup guide beside the device picker.</figcaption>
+      </figure>
+
+      <h3>2. Configure radio, Wi-Fi and MQTT</h3>
+      <p>
+        Keep the board connected after the flash and open <strong>Repeater Setup</strong> or <strong>Console</strong> in the flasher.
+        Set a recognisable node name, the radio preset used by the local mesh, the local region code, Wi-Fi credentials and the letsmesh MQTT preset.
+        The region code is normally an IATA-style code used to group observer data. Switzerland currently uses <code>BRN</code> as its single country-wide region.
+      </p>
+
+      <p>
+        The following is an example for the current Swiss mesh. It is not a worldwide configuration. The observer flasher generates an up-to-date command block, so use its values if they differ from this example.
+      </p>
+
+<pre><code>set radio 869.618,62.5,8,8
+set tx 22
+set name MyObserver
+set mqtt.iata BRN
+set mqtt3.preset meshmapper
+set wifi.ssid YourWiFiNetwork
+set wifi.pwd YourWiFiPassword
+set mqtt.rx on
+set mqtt.tx advert
+set bridge.enabled on
+set repeat on
+set path.hash.mode 1
+set dutycycle 10
+reboot</code></pre>
+
+      <p>
+        The first line is the Swiss <code>869.618 MHz / BW62.5 / SF8 / CR8</code> configuration.
+        In another country, replace it with the preset agreed on by the local MeshCore community. Transmit power also has to stay within the local EIRP and duty-cycle limits, including antenna gain and cable loss.
+      </p>
+
+      <p>
+        <code>mqtt3.preset meshmapper</code> connects the observer to the MeshMapper MQTT broker.
+        <code>path.hash.mode 1</code> makes the repeater use the two-byte ID recommended by the Swiss MeshCore community in its own advertisements, which helps mapping tools distinguish repeaters that share the same first byte.
+        It does not stop the repeater from forwarding older one-byte paths.
+        The Swiss recommendations also currently call for a duty cycle of 10, zero-hop adverts disabled and a flood-advert interval of 49 hours. These settings are easiest to apply in the Repeater Setup form.
+      </p>
+
+      <p>
+        Before putting the repeater in service, change its default administrator password in Repeater Setup.
+        The Swiss community recommends leaving the guest password empty so other users can read basic statistics without being able to change the node.
+      </p>
+
+      <p class="note">
+        Do not publish the real command block from your console: it contains the Wi-Fi password. If the network name or password contains unusual characters, use the configuration form or check the flasher documentation before adding quotes.
+      </p>
+
+      <h3>3. Check that it is working</h3>
+      <p>
+        After the reboot, check the console for a Wi-Fi address and an MQTT connection. The firmware also provides useful status commands:
+      </p>
+
+<pre><code>get wifi.status
+get mqtt.status
+get mqtt.iata
+get mqtt.packets
+get bridge.enabled
+get repeat</code></pre>
+
+      <p>
+        Next, open the observer list in letsmesh, select the same region and look for the node name.
+        It can take a few minutes to appear. The board should show a recent last-seen time and an online state. If it does not, the usual causes are a wrong Wi-Fi password, a 5 GHz-only network, the wrong IATA region or an MQTT preset for the wrong part of the world.
+      </p>
+
+      <p>
+        Once it works on the bench, place it where the radio can actually hear something. Antenna height and a clear view matter much more than hiding the board in a convenient corner beside the router.
+        Keep the ESP32, power supply and antenna connections dry, and do not expose a bare development board outdoors.
+      </p>
+    </section>
+
+    <section>
+      <h2>How MeshMapper works</h2>
+
+      <p>
+        letsmesh answers “what is the mesh doing?” MeshMapper answers a different question: “where can I use it?”
+        It builds a coverage map from measurements collected while people walk, cycle or drive around with a MeshCore companion radio and a phone.
+      </p>
+
+      <p>
+        The <a href="https://wiki.meshmapper.net/app_getting_started/">MeshMapper app</a> connects to the companion radio over Bluetooth.
+        The phone supplies GPS position and internet access, while the radio supplies the LoRa link. In the recommended Hybrid mode, the app alternates between a flooded <code>#wardriving</code> message and a direct discovery request.
+        It also records ordinary mesh packets heard along the way.
+      </p>
+
+      <p>
+        After a transmit ping, the app listens for the repeated packet coming back. Observers listening elsewhere may hear the same ping and report it over MQTT.
+        That second view is valuable: it can confirm that the packet did not only come back to the sender, but also travelled through the mesh to an observer.
+        MeshMapper uploads the GPS position, repeater path and signal measurements, then adds the result to the public map.
+      </p>
+
+      <p>
+        By default, the GPS coordinates go to the MeshMapper API and are not put into the radio message. The on-air message contains a short token that allows the app and backend to match the reports.
+        There is a setting to broadcast coordinates over the mesh, but it is optional. The resulting coverage points are public, so it is still worth reading the privacy notice before starting a session.
+      </p>
+
+      <figure>
+        <img
+          src="../files/meshmapper-coverage-map.png"
+          width="3420"
+          height="1954"
+          loading="lazy"
+          decoding="async"
+          alt="MeshMapper coverage map around Zurich showing coloured survey tracks and repeater markers">
+        <figcaption>MeshMapper around Zurich. The coloured squares are real measurements collected along travelled routes, not a theoretical coverage circle.</figcaption>
+      </figure>
+
+      <p>
+        This is the part I like about MeshMapper: the map shows measured coverage rather than drawing an optimistic circle around every repeater.
+        Filters can separate repeaters, dates, signal levels, hop counts and radio configurations. Gaps in the tracks show where more surveying is needed, while repeated measurements make it easier to see whether an antenna change really improved anything.
+      </p>
+
+      <p>
+        For a first survey, install MeshMapper on a phone, enable Bluetooth and location, connect a MeshCore companion and choose the local region.
+        Tell the app whether the antenna is outside and unobstructed, then start Hybrid mode and travel normally. Do not handle the phone while driving.
+        Passive mode is a good choice when the region is busy because it avoids flooded channel messages, and Trace mode is useful when testing one particular repeater.
+      </p>
+    </section>
+
+    <section>
+      <h2>The short version</h2>
+
+      <p>
+        A repeater observer listens on LoRa, repeats packets and reports what it hears over Wi-Fi. letsmesh combines reports from many observers into a live view of packets and routes.
+        MeshMapper combines GPS-tagged field measurements with those observer reports to build a map of real coverage. The three pieces are useful on their own, but together they make a MeshCore network much easier to understand and improve.
+      </p>
+
+      <h3>Useful links</h3>
+      <ul class="post-links">
+        <li><a href="https://analyzer.letsmesh.net/">letsmesh MeshCore Analyzer</a></li>
+        <li><a href="https://analyzer.letsmesh.net/observer/onboard">letsmesh observer onboarding</a></li>
+        <li><a href="https://www.meshcore.ch/?lang=en">MeshCore Switzerland settings</a></li>
+        <li><a href="https://meshmapper.net/">MeshMapper</a></li>
+        <li><a href="https://wiki.meshmapper.net/">MeshMapper documentation</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="../index.html">← Back to home</a></p>
+  </footer>
+</body>
+</html>
