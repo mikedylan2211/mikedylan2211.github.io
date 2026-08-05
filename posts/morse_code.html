@@ -29,7 +29,7 @@
       margin-bottom: 0.3rem;
       color: var(--text-muted);
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 500;
     }
 
     select,
@@ -67,7 +67,7 @@
     .prompt-symbol {
       color: var(--amber);
       font-size: clamp(2.4rem, 8vw, 5rem);
-      font-weight: 700;
+      font-weight: 500;
       letter-spacing: 0.08em;
       line-height: 1.1;
       overflow-wrap: anywhere;
@@ -97,14 +97,14 @@
       background: var(--bg-section);
       border: 1px dashed var(--border);
       font-size: 1.8rem;
-      font-weight: 700;
+      font-weight: 500;
       letter-spacing: 0.18em;
     }
 
     .morse-entry[data-empty="true"] {
       color: var(--text-muted);
       font-size: 0.9rem;
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: 0;
     }
 
@@ -138,7 +138,7 @@
       border-radius: 3px;
       cursor: pointer;
       font: inherit;
-      font-weight: 600;
+      font-weight: 500;
     }
 
     button:hover:not(:disabled) {
@@ -204,7 +204,7 @@
     .stat dd {
       color: var(--amber);
       font-size: 1.2rem;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .reference-group + .reference-group {
@@ -231,7 +231,7 @@
     .reference-card dt {
       color: var(--green);
       font-size: 1.05rem;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .reference-card dd {
@@ -309,7 +309,10 @@
 
 <body>
   <header>
-    <h1>./morse_code.sh</h1>
+  <div class="terminal-launch">
+    <p class="terminal-command"><span class="terminal-user">root</span><span class="terminal-host">@localhost</span><span class="terminal-path">:~</span><span class="terminal-prompt">#</span> <span class="terminal-bin">chmod</span> <span class="terminal-flag">+x</span> <span class="terminal-file">morse_code.sh</span></p>
+    <h1><span class="terminal-user">root</span><span class="terminal-host">@localhost</span><span class="terminal-path">:~</span><span class="terminal-prompt">#</span> <span class="terminal-path">./</span><span class="terminal-file">morse_code.sh</span></h1>
+  </div>
     <p class="meta">Last edited: <time datetime="2026-08-05">August 5, 2026</time></p>
     <p><a href="../index.html">← Back to home</a></p>
   </header>

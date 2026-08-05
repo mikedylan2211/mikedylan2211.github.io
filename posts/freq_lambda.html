@@ -29,7 +29,7 @@
 
 label {
   display: block;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 0.5rem;
 }
 
@@ -59,12 +59,12 @@ select {
   background-color: var(--bg-code);
   border: 1px solid var(--border);
   border-radius: 3px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .result small {
   display: block;
-  font-weight: 400;
+  font-weight: 500;
   color: var(--text-muted);
   margin-top: 0.25rem;
 }
@@ -102,7 +102,10 @@ code {
 
 <body>
 <header>
-  <h1>./unit_conversion.sh</h1>
+  <div class="terminal-launch">
+    <p class="terminal-command"><span class="terminal-user">root</span><span class="terminal-host">@localhost</span><span class="terminal-path">:~</span><span class="terminal-prompt">#</span> <span class="terminal-bin">chmod</span> <span class="terminal-flag">+x</span> <span class="terminal-file">unit_conversion.sh</span></p>
+    <h1><span class="terminal-user">root</span><span class="terminal-host">@localhost</span><span class="terminal-path">:~</span><span class="terminal-prompt">#</span> <span class="terminal-path">./</span><span class="terminal-file">unit_conversion.sh</span></h1>
+  </div>
   <p class="meta">Last edited: <time datetime="2026-01-29">January 29, 2026</time></p>
   <p><a href="../index.html">← Back to home</a></p>
 </header>
