@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A browser-based Morse code trainer for receiving and translating letters, numbers, words, and callsign-like groups.">
+  <title>Morse Code Trainer - Mike Dylan Poppelaars</title>
+  <link rel="stylesheet" href="../style.css">
+
+  <style>
+    .practice-panel {
+      padding: 1rem;
+      background: var(--bg-code);
+      border: 2px solid var(--border);
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 0.8rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.3rem;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      color: var(--text-main);
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font: inherit;
+    }
+
+    #answerInput {
+      text-transform: uppercase;
+    }
+
+    select:focus,
+    input:focus,
+    button:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    .prompt-card {
+      display: grid;
+      min-height: 10rem;
+      margin: 1rem 0;
+      place-items: center;
+      text-align: center;
+      background: var(--bg-section);
+      border: 1px dashed var(--border);
+    }
+
+    .prompt-symbol {
+      color: var(--amber);
+      font-size: clamp(2.4rem, 8vw, 5rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+
+    .prompt-note {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .answer-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.65rem;
+      align-items: end;
+    }
+
+    .keyer-panel {
+      margin-top: 0.8rem;
+    }
+
+    .morse-entry {
+      display: grid;
+      min-height: 4rem;
+      place-items: center;
+      color: var(--amber);
+      background: var(--bg-section);
+      border: 1px dashed var(--border);
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+    }
+
+    .morse-entry[data-empty="true"] {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    .keyer-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-top: 0.65rem;
+    }
+
+    .keyer-hint {
+      margin-top: 0.55rem;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    kbd {
+      padding: 0.1rem 0.35rem;
+      color: var(--amber);
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font: inherit;
+    }
+
+    button {
+      padding: 0.65rem 0.9rem;
+      color: var(--green);
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+    }
+
+    button:hover:not(:disabled) {
+      color: var(--bg-main);
+      background: var(--green);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .primary-action {
+      width: 100%;
+      margin-top: 0.8rem;
+      color: var(--bg-main);
+      background: var(--green);
+    }
+
+    .primary-action:hover:not(:disabled) {
+      background: var(--cyan);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 0.65rem;
+      margin-top: 0.65rem;
+    }
+
+    .button-row button {
+      flex: 1;
+    }
+
+    .feedback {
+      min-height: 1.7rem;
+      margin-top: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .feedback[data-state="correct"] { color: var(--green); }
+    .feedback[data-state="wrong"] { color: var(--red); }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+
+    .stat {
+      padding: 0.55rem;
+      text-align: center;
+      background: var(--bg-section);
+      border: 1px solid var(--border);
+    }
+
+    .stat dt {
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+
+    .stat dd {
+      color: var(--amber);
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .reference-group + .reference-group {
+      margin-top: 1.5rem;
+    }
+
+    .reference-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+      gap: 0.55rem;
+      margin-top: 0.7rem;
+    }
+
+    .reference-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 0.6rem 0.7rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+    }
+
+    .reference-card dt {
+      color: var(--green);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .reference-card dd {
+      color: var(--amber);
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+
+    noscript p {
+      color: var(--red);
+    }
+
+    @media (max-width: 720px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .answer-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      main {
+        padding: 1.5rem 0.75rem;
+      }
+
+      section {
+        padding: 1.2rem;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      .keyer-buttons {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      #clearMorseButton {
+        grid-column: 1 / -1;
+      }
+
+      .reference-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media print {
+      .practice-panel {
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .controls,
+      .answer-form,
+      .keyer-panel,
+      .button-row,
+      .primary-action,
+      .feedback,
+      .stats {
+        display: none;
+      }
+
+      .prompt-card {
+        min-height: 0;
+      }
+
+      .reference-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>./morse_code.sh</h1>
+    <p class="meta">Last edited: <time datetime="2026-08-05">August 5, 2026</time></p>
+    <p><a href="../index.html">← Back to home</a></p>
+  </header>
+
+  <main>
+    <section id="trainer">
+      <h2 id="trainerHeading">Listen and identify</h2>
+      <p id="trainerIntro">
+        Learn Morse by recognizing its rhythm. Play a prompt and type what you hear.
+      </p>
+
+      <div class="trainer-layout">
+        <div class="practice-panel">
+          <div class="controls">
+            <div>
+              <label for="exerciseMode">Exercise</label>
+              <select id="exerciseMode">
+                <option value="listen" selected>Listen and identify</option>
+                <option value="translate">Translate to Morse</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="characterSet">Practice mode</label>
+              <select id="characterSet">
+                <option value="letters" selected>Letters · A–Z</option>
+                <option value="numbers">Numbers · 0–9</option>
+                <option value="groups">Progressive letter groups</option>
+                <option value="words">Five-letter words</option>
+                <option value="callsigns">Callsign-like · K1ABC</option>
+              </select>
+            </div>
+
+            <div id="groupControl" hidden>
+              <label for="letterGroup">Letter group</label>
+              <select id="letterGroup">
+                <option value="0">Group 1 · E T</option>
+                <option value="1">Group 2 · I M S O</option>
+                <option value="2">Group 3 · A N R W</option>
+                <option value="3">Group 4 · D K G U</option>
+                <option value="4">Group 5 · L P J B X C Y Z</option>
+                <option value="5">Group 6 · Q F H V</option>
+              </select>
+            </div>
+
+            <div id="speedControl">
+              <label for="speed">Character speed</label>
+              <select id="speed">
+                <option value="10">10 WPM · slow</option>
+                <option value="15" selected>15 WPM · normal</option>
+                <option value="20">20 WPM · quick</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="primary-action" id="playButton" type="button">▶ Play Morse</button>
+
+          <div class="prompt-card" aria-live="polite">
+            <div>
+              <div class="prompt-symbol" id="promptSymbol">?</div>
+              <div class="prompt-note" id="promptNote">Listen before revealing the answer</div>
+            </div>
+          </div>
+
+          <form class="answer-form" id="answerForm">
+            <div>
+              <label for="answerInput">Your answer</label>
+              <input id="answerInput" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="feedback" placeholder="Type what you hear">
+            </div>
+            <button id="checkButton" type="submit">Check</button>
+          </form>
+
+          <div class="keyer-panel" id="keyerPanel" hidden>
+            <div class="morse-entry" id="morseEntry" role="status" aria-live="polite">Waiting for input</div>
+            <div class="keyer-buttons">
+              <button id="ditButton" type="button" aria-keyshortcuts="J">J · Dit</button>
+              <button id="dahButton" type="button" aria-keyshortcuts="K">K − Dah</button>
+              <button id="clearMorseButton" type="button">Clear</button>
+            </div>
+            <p class="keyer-hint">Keyboard controls: <kbd>J</kbd> for dit and <kbd>K</kbd> for dah.</p>
+          </div>
+
+          <div class="button-row">
+            <button id="revealButton" type="button">Reveal</button>
+            <button id="nextButton" type="button">Skip prompt</button>
+          </div>
+
+          <p class="feedback" id="feedback" role="status" aria-live="polite">Press Play Morse to begin.</p>
+
+          <dl class="stats" aria-label="Practice statistics">
+            <div class="stat">
+              <dt>Correct</dt>
+              <dd id="correctCount">0</dd>
+            </div>
+            <div class="stat">
+              <dt>Attempts</dt>
+              <dd id="attemptCount">0</dd>
+            </div>
+            <div class="stat">
+              <dt>Streak</dt>
+              <dd id="streakCount">0</dd>
+            </div>
+          </dl>
+        </div>
+
+      </div>
+
+      <noscript>
+        <p>The audio trainer and generated reference chart require JavaScript.</p>
+      </noscript>
+    </section>
+
+    <section id="reference">
+      <h2>Morse reference</h2>
+
+      <div class="reference-group">
+        <h3>Letters</h3>
+        <dl class="reference-grid" id="letterReference"></dl>
+      </div>
+
+      <div class="reference-group">
+        <h3>Numbers</h3>
+        <dl class="reference-grid" id="numberReference"></dl>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="../index.html">← Back to home</a></p>
+  </footer>
+
+  <script>
+    const MORSE = Object.freeze({
+      A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', F: '..-.',
+      G: '--.', H: '....', I: '..', J: '.---', K: '-.-', L: '.-..',
+      M: '--', N: '-.', O: '---', P: '.--.', Q: '--.-', R: '.-.',
+      S: '...', T: '-', U: '..-', V: '...-', W: '.--', X: '-..-',
+      Y: '-.--', Z: '--..',
+      0: '-----', 1: '.----', 2: '..---', 3: '...--', 4: '....-',
+      5: '.....', 6: '-....', 7: '--...', 8: '---..', 9: '----.'
+    });
+
+    const FIVE_LETTER_WORDS = Object.freeze([
+      'ABOUT', 'ABOVE', 'AFTER', 'AGAIN', 'AGENT', 'AUDIO', 'BEACH', 'BLACK',
+      'BRAIN', 'BROWN', 'BUILD', 'CABLE', 'CHAIR', 'CLOCK', 'CLOUD', 'CRANE',
+      'DREAM', 'DRINK', 'EARTH', 'FIELD', 'FIRST', 'GREEN', 'HEART', 'HOUSE',
+      'HUMAN', 'LIGHT', 'MAGIC', 'METAL', 'MONEY', 'MORSE', 'MOUSE', 'MUSIC',
+      'NIGHT', 'NORTH', 'OCEAN', 'PAPER', 'PHONE', 'PLANT', 'POINT', 'POWER',
+      'RADIO', 'RIVER', 'ROUND', 'SOUND', 'SOUTH', 'SPACE', 'SPEED', 'STONE',
+      'STORM', 'TABLE', 'TIGER', 'TRAIN', 'WATER', 'WHITE', 'WORLD', 'WRITE'
+    ]);
+
+    const CALLSIGN_PREFIXES = Object.freeze([
+      'K', 'N', 'W', 'AA', 'AB', 'DL', 'F', 'G', 'HB', 'JA', 'LA', 'LU',
+      'OH', 'ON', 'PA', 'PY', 'SM', 'VE', 'VK', 'ZS'
+    ]);
+
+    const LETTER_GROUPS = Object.freeze([
+      Object.freeze([...'ET']),
+      Object.freeze([...'IMSO']),
+      Object.freeze([...'ANRW']),
+      Object.freeze([...'DKGU']),
+      Object.freeze([...'LPJBXCYZ']),
+      Object.freeze([...'QFHV'])
+    ]);
+
+    const PRACTICE_SETS = Object.freeze({
+      letters: [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'],
+      numbers: [...'0123456789'],
+      words: FIVE_LETTER_WORDS
+    });
+
+    const trainerHeading = document.getElementById('trainerHeading');
+    const trainerIntro = document.getElementById('trainerIntro');
+    const exerciseMode = document.getElementById('exerciseMode');
+    const characterSet = document.getElementById('characterSet');
+    const listeningOnlyOptions = characterSet.querySelectorAll('option[value="words"], option[value="callsigns"]');
+    const groupControl = document.getElementById('groupControl');
+    const letterGroup = document.getElementById('letterGroup');
+    const speedControl = document.getElementById('speedControl');
+    const speed = document.getElementById('speed');
+    const playButton = document.getElementById('playButton');
+    const promptSymbol = document.getElementById('promptSymbol');
+    const promptNote = document.getElementById('promptNote');
+    const answerForm = document.getElementById('answerForm');
+    const answerInput = document.getElementById('answerInput');
+    const checkButton = document.getElementById('checkButton');
+    const keyerPanel = document.getElementById('keyerPanel');
+    const morseEntry = document.getElementById('morseEntry');
+    const ditButton = document.getElementById('ditButton');
+    const dahButton = document.getElementById('dahButton');
+    const clearMorseButton = document.getElementById('clearMorseButton');
+    const revealButton = document.getElementById('revealButton');
+    const nextButton = document.getElementById('nextButton');
+    const feedback = document.getElementById('feedback');
+    const correctCount = document.getElementById('correctCount');
+    const attemptCount = document.getElementById('attemptCount');
+    const streakCount = document.getElementById('streakCount');
+
+    let audioContext;
+    let currentPrompt = '';
+    let morseInput = '';
+    let isAnswered = false;
+    let isPlaying = false;
+    let correct = 0;
+    let attempts = 0;
+    let streak = 0;
+
+    function visualMorse(pattern) {
+      return [...pattern]
+        .map(symbol => symbol === '.' ? '·' : '−')
+        .join(' ');
+    }
+
+    function visualPrompt(prompt) {
+      return [...prompt]
+        .map(character => visualMorse(MORSE[character]))
+        .join('   /   ');
+    }
+
+    function setFeedback(message, state = '') {
+      feedback.textContent = message;
+      feedback.dataset.state = state;
+    }
+
+    function updateStats() {
+      correctCount.textContent = String(correct);
+      attemptCount.textContent = String(attempts);
+      streakCount.textContent = String(streak);
+    }
+
+    function resetStats() {
+      correct = 0;
+      attempts = 0;
+      streak = 0;
+      updateStats();
+    }
+
+    function isListeningExercise() {
+      return exerciseMode.value === 'listen';
+    }
+
+    function updateMorseEntry() {
+      morseEntry.textContent = morseInput ? visualMorse(morseInput) : 'Waiting for J or K';
+      morseEntry.dataset.empty = String(!morseInput);
+      clearMorseButton.disabled = !morseInput || isAnswered;
+    }
+
+    function updateExerciseUI() {
+      const listening = isListeningExercise();
+
+      listeningOnlyOptions.forEach(option => {
+        option.disabled = !listening;
+      });
+
+      if (!listening && (characterSet.value === 'words' || characterSet.value === 'callsigns')) {
+        characterSet.value = 'letters';
+      }
+
+      trainerHeading.textContent = listening ? 'Listen and identify' : 'Translate to Morse';
+      trainerIntro.textContent = listening
+        ? 'Learn Morse by recognizing its rhythm. Play a prompt and type what you hear.'
+        : 'Translate the character shown below. Press J for dit and K for dah.';
+      speedControl.hidden = !listening;
+      playButton.hidden = !listening;
+      answerForm.hidden = !listening;
+      keyerPanel.hidden = listening;
+      resetStats();
+      updateGroupControl();
+      nextPrompt();
+    }
+
+    function updateGroupControl() {
+      const isGroupMode = characterSet.value === 'groups';
+      groupControl.hidden = !isGroupMode;
+      letterGroup.disabled = !isGroupMode || isPlaying;
+    }
+
+    function randomItem(items) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function generateCallsign() {
+      const prefix = randomItem(CALLSIGN_PREFIXES);
+      const number = randomItem(PRACTICE_SETS.numbers);
+      const suffix = Array.from({ length: 3 }, () => randomItem(PRACTICE_SETS.letters)).join('');
+      return `${prefix}${number}${suffix}`;
+    }
+
+    function pickPrompt() {
+      let candidate;
+
+      do {
+        if (characterSet.value === 'callsigns') {
+          candidate = generateCallsign();
+        } else if (characterSet.value === 'groups') {
+          candidate = randomItem(LETTER_GROUPS[Number(letterGroup.value)]);
+        } else {
+          candidate = randomItem(PRACTICE_SETS[characterSet.value]);
+        }
+      } while (candidate === currentPrompt);
+
+      return candidate;
+    }
+
+    function nextPrompt() {
+      currentPrompt = pickPrompt();
+      isAnswered = false;
+      morseInput = '';
+      answerInput.value = '';
+      answerInput.maxLength = currentPrompt.length;
+      answerInput.inputMode = characterSet.value === 'numbers' ? 'numeric' : 'text';
+      answerInput.placeholder = currentPrompt.length === 1
+        ? 'Type one character'
+        : `Type all ${currentPrompt.length} characters`;
+      answerInput.disabled = false;
+      checkButton.disabled = false;
+      revealButton.disabled = false;
+      updateMorseEntry();
+
+      if (isListeningExercise()) {
+        promptSymbol.textContent = '?';
+        promptNote.textContent = 'Listen before revealing the answer';
+        setFeedback('');
+      } else {
+        promptSymbol.textContent = currentPrompt;
+        promptNote.textContent = '';
+        setFeedback('');
+      }
+
+      setBusyState(false);
+    }
+
+    function revealAnswer(message = '') {
+      isAnswered = true;
+      streak = 0;
+      promptSymbol.textContent = currentPrompt;
+      promptNote.textContent = visualPrompt(currentPrompt);
+      morseInput = MORSE[currentPrompt] || '';
+      updateMorseEntry();
+      answerInput.disabled = true;
+      checkButton.disabled = true;
+      revealButton.disabled = true;
+      setFeedback(message);
+      setBusyState(false);
+      updateStats();
+    }
+
+    function setPlaybackState(playing) {
+      isPlaying = playing;
+      setBusyState(playing);
+      playButton.textContent = playing ? 'Playing…' : '▶ Play Morse';
+    }
+
+    function setBusyState(busy) {
+      playButton.disabled = busy;
+      revealButton.disabled = busy || isAnswered;
+      nextButton.disabled = busy;
+      exerciseMode.disabled = busy;
+      characterSet.disabled = busy;
+      letterGroup.disabled = busy || characterSet.value !== 'groups';
+      speed.disabled = busy;
+      answerInput.disabled = busy || isAnswered;
+      checkButton.disabled = busy || isAnswered;
+      const keyerDisabled = busy || isAnswered || isListeningExercise();
+      ditButton.disabled = keyerDisabled;
+      dahButton.disabled = keyerDisabled;
+      clearMorseButton.disabled = keyerDisabled || !morseInput;
+    }
+
+    function scheduleTone(context, start, duration) {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      const edge = Math.min(0.008, duration / 4);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.value = 650;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.18, start + edge);
+      gain.gain.setValueAtTime(0.18, start + duration - edge);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.01);
+    }
+
+    async function soundKeySymbol(symbol) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+
+      try {
+        audioContext ||= new AudioContextClass();
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+        }
+
+        const dotDuration = 1.2 / Number(speed.value);
+        const duration = symbol === '-' ? dotDuration * 3 : dotDuration;
+        scheduleTone(audioContext, audioContext.currentTime + 0.01, duration);
+      } catch (error) {
+        // Visual keying remains available if audio cannot be started.
+      }
+    }
+
+    async function playCurrentPrompt() {
+      if (isPlaying || !isListeningExercise()) return;
+
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) {
+        setFeedback('Audio playback is not supported in this browser.', 'wrong');
+        return;
+      }
+
+      const dotDuration = 1.2 / Number(speed.value);
+      setPlaybackState(true);
+      setFeedback('Listen…');
+
+      try {
+        audioContext ||= new AudioContextClass();
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+        }
+
+        let cursor = audioContext.currentTime + 0.05;
+
+        [...currentPrompt].forEach((character, characterIndex) => {
+          const pattern = MORSE[character];
+
+          [...pattern].forEach((symbol, symbolIndex) => {
+            const duration = symbol === '-' ? dotDuration * 3 : dotDuration;
+            scheduleTone(audioContext, cursor, duration);
+            cursor += duration;
+            if (symbolIndex < pattern.length - 1) cursor += dotDuration;
+          });
+
+          if (characterIndex < currentPrompt.length - 1) cursor += dotDuration * 3;
+        });
+
+        const delay = Math.max(0, (cursor - audioContext.currentTime) * 1000);
+        window.setTimeout(() => {
+          setPlaybackState(false);
+          if (!isAnswered) {
+            setFeedback('What did you hear?');
+            answerInput.focus();
+          }
+        }, delay + 30);
+      } catch (error) {
+        setPlaybackState(false);
+        setFeedback('Audio could not be started. Try revealing the character instead.', 'wrong');
+      }
+    }
+
+    function completeCorrectAnswer() {
+      correct += 1;
+      streak += 1;
+      isAnswered = true;
+      promptSymbol.textContent = currentPrompt;
+      promptNote.textContent = visualPrompt(currentPrompt);
+      setFeedback(
+        isListeningExercise()
+          ? 'Correct! The next prompt will play automatically.'
+          : 'Correct! The next character will appear automatically.',
+        'correct'
+      );
+      setBusyState(true);
+      updateStats();
+
+      window.setTimeout(() => {
+        const shouldPlay = isListeningExercise();
+        nextPrompt();
+        setBusyState(false);
+        if (shouldPlay) void playCurrentPrompt();
+      }, 650);
+    }
+
+    function checkAnswer(event) {
+      event.preventDefault();
+      if (isAnswered) return;
+
+      const guess = answerInput.value.trim().toUpperCase();
+      if (!/^[A-Z0-9]+$/.test(guess) || guess.length !== currentPrompt.length) {
+        const unit = currentPrompt.length === 1 ? 'character' : 'characters';
+        setFeedback(`Enter all ${currentPrompt.length} ${unit}.`, 'wrong');
+        answerInput.focus();
+        return;
+      }
+
+      attempts += 1;
+
+      if (guess === currentPrompt) {
+        completeCorrectAnswer();
+      } else {
+        streak = 0;
+        setFeedback(`${guess} is not correct. Listen again or reveal the answer.`, 'wrong');
+        answerInput.select();
+        updateStats();
+      }
+    }
+
+    function clearMorseInput() {
+      if (isAnswered || isListeningExercise()) return;
+      morseInput = '';
+      updateMorseEntry();
+      setFeedback('');
+    }
+
+    function enterMorseSymbol(symbol) {
+      if (isAnswered || isListeningExercise() || isPlaying) return;
+
+      const expectedPattern = MORSE[currentPrompt];
+      if (morseInput.length >= expectedPattern.length) return;
+
+      void soundKeySymbol(symbol);
+      morseInput += symbol;
+      updateMorseEntry();
+
+      if (morseInput.length !== expectedPattern.length) return;
+
+      attempts += 1;
+
+      if (morseInput === expectedPattern) {
+        completeCorrectAnswer();
+        return;
+      }
+
+      streak = 0;
+      setFeedback(`${visualMorse(morseInput)} is not correct. Try again.`, 'wrong');
+      setBusyState(true);
+      updateStats();
+
+      window.setTimeout(() => {
+        morseInput = '';
+        updateMorseEntry();
+        setBusyState(false);
+        setFeedback('Try again.');
+      }, 650);
+    }
+
+    function buildReference(containerId, characters) {
+      const container = document.getElementById(containerId);
+      const fragment = document.createDocumentFragment();
+
+      characters.forEach(character => {
+        const card = document.createElement('div');
+        const term = document.createElement('dt');
+        const description = document.createElement('dd');
+
+        card.className = 'reference-card';
+        term.textContent = character;
+        description.textContent = visualMorse(MORSE[character]);
+        card.append(term, description);
+        fragment.append(card);
+      });
+
+      container.append(fragment);
+    }
+
+    playButton.addEventListener('click', playCurrentPrompt);
+    answerForm.addEventListener('submit', checkAnswer);
+    answerInput.addEventListener('input', () => {
+      if (isListeningExercise() && answerInput.value.trim().length === currentPrompt.length) {
+        answerForm.requestSubmit();
+      }
+    });
+    ditButton.addEventListener('click', () => enterMorseSymbol('.'));
+    dahButton.addEventListener('click', () => enterMorseSymbol('-'));
+    clearMorseButton.addEventListener('click', clearMorseInput);
+    revealButton.addEventListener('click', () => revealAnswer());
+    nextButton.addEventListener('click', () => {
+      nextPrompt();
+      void playCurrentPrompt();
+    });
+    exerciseMode.addEventListener('change', updateExerciseUI);
+    characterSet.addEventListener('change', () => {
+      resetStats();
+      updateGroupControl();
+      nextPrompt();
+    });
+    letterGroup.addEventListener('change', () => {
+      resetStats();
+      nextPrompt();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+
+      const key = event.key.toLowerCase();
+      if (!isListeningExercise() && (key === 'j' || key === 'k')) {
+        event.preventDefault();
+        enterMorseSymbol(key === 'j' ? '.' : '-');
+      }
+    });
+
+    buildReference('letterReference', PRACTICE_SETS.letters);
+    buildReference('numberReference', PRACTICE_SETS.numbers);
+    updateExerciseUI();
+  </script>
+</body>
+</html>

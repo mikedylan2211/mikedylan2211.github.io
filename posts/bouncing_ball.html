@@ -53,7 +53,7 @@ button:hover {
 <body>
 <header>
   <h1>./bouncing_ball.sh</h1>
-  <p class="meta">Last edited: <time datetime="2026-01-20">January 20, 2026</time></p>
+  <p class="meta">Last edited: <time datetime="2026-08-05">August 5, 2026</time></p>
   <p><a href="../index.html">← Back to home</a></p>
 </header>
 
@@ -190,8 +190,7 @@ function drawBall(ball) {
 }
 
 function animate() {
-  ctx.fillStyle = 'rgba(0,0,0,0.1)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   balls.forEach(ball => {
     if (gravityEnabled) ball.velocityY += ball.gravity;
