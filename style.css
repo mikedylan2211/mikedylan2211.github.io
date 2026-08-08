@@ -15,6 +15,16 @@
   --border: #1f5e49;
 }
 
+html,
+body {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
