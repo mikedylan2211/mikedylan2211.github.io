@@ -313,16 +313,13 @@
     <p class="terminal-command"><span class="terminal-user">root</span><span class="terminal-host">@localhost</span><span class="terminal-path">:~</span><span class="terminal-prompt">#</span> <span class="terminal-bin">chmod</span> <span class="terminal-flag">+x</span> <span class="terminal-file">morse_code.sh</span></p>
     <h1><span class="terminal-user">root</span><span class="terminal-host">@localhost</span><span class="terminal-path">:~</span><span class="terminal-prompt">#</span> <span class="terminal-path">./</span><span class="terminal-file">morse_code.sh</span></h1>
   </div>
-    <p class="meta">Last edited: <time datetime="2026-08-05">August 5, 2026</time></p>
+    <p class="meta">Last edited: <time datetime="2026-08-08">August 8, 2026</time></p>
     <p><a href="../index.html">← Back to home</a></p>
   </header>
 
   <main>
     <section id="trainer">
       <h2 id="trainerHeading">Listen and identify</h2>
-      <p id="trainerIntro">
-        Learn Morse by recognizing its rhythm. Play a prompt and type what you hear.
-      </p>
 
       <div class="trainer-layout">
         <div class="practice-panel">
@@ -397,7 +394,7 @@
 
           <div class="button-row">
             <button id="revealButton" type="button">Reveal</button>
-            <button id="nextButton" type="button">Skip prompt</button>
+            <button id="nextButton" type="button">Skip</button>
           </div>
 
           <p class="feedback" id="feedback" role="status" aria-live="polite">Press Play Morse to begin.</p>
@@ -486,7 +483,6 @@
     });
 
     const trainerHeading = document.getElementById('trainerHeading');
-    const trainerIntro = document.getElementById('trainerIntro');
     const exerciseMode = document.getElementById('exerciseMode');
     const characterSet = document.getElementById('characterSet');
     const listeningOnlyOptions = characterSet.querySelectorAll('option[value="words"], option[value="callsigns"]');
@@ -573,9 +569,6 @@
       }
 
       trainerHeading.textContent = listening ? 'Listen and identify' : 'Translate to Morse';
-      trainerIntro.textContent = listening
-        ? 'Learn Morse by recognizing its rhythm. Play a prompt and type what you hear.'
-        : 'Translate the character shown below. Press J for dit and K for dah.';
       speedControl.hidden = !listening;
       playButton.hidden = !listening;
       answerForm.hidden = !listening;
