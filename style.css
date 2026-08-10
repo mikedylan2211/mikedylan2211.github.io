@@ -272,13 +272,41 @@ p code { color: var(--amber); }
   pre { font-size: 0.82rem; }
 }
 
-#HAMQSL img {
+#radio img {
   display: block;
   max-width: 100%;
   height: auto;
   margin-top: 1rem;
   border: none;
   background: none;
+}
+
+.qso-log-link {
+  display: flex;
+  margin: 1rem 0 1.5rem;
+  padding: 0.9rem 1rem;
+  flex-direction: column;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  box-shadow: inset 3px 0 0 rgba(0, 255, 136, 0.55);
+}
+
+.qso-log-link span {
+  color: var(--green);
+}
+
+.qso-log-link small {
+  margin-top: 0.15rem;
+  color: var(--text-muted);
+}
+
+.qso-log-link:hover {
+  background: rgba(0, 255, 136, 0.045);
+}
+
+.qso-log-link:hover small {
+  color: var(--cyan);
 }
 
 .snowflake-proxy {
@@ -315,7 +343,7 @@ footer::after {
   #about,
   #posts,
   #contact,
-  #HAMQSL,
+  #radio,
   iframe {
     display: none !important;
   }
